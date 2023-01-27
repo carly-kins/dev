@@ -19,7 +19,7 @@ create_symlinks() {
 create_symlinks
 
 Echo "*** Setting up custom zsh"
-git clone git@github.com:carly-kins/dev.git
-ln -s $(pwd)/dev/.oh-my-zsh-custom ~/.oh-my-zsh-custom
-ln -s $(pwd)/dev/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
+
+ln -s $(pwd)/workspaces/.codespaces/.persistedshare/dotfiles/.oh-my-zsh-custom ~/.oh-my-zsh-custom
+ln -s $(pwd)/workspaces/.codespaces/.persistedshare/dotfiles/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
 
