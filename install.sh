@@ -18,16 +18,6 @@ create_symlinks() {
 
 create_symlinks
 
-Echo "*** Installing Homebrew"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-
-#Echo "*** Installing tools"
-#brew install tmux
-#brew install cmake
-#brew install ninja
-#brew install sccache
-#brew install shellcheck
-
 Echo "*** Setting up custom zsh"
 git clone git@github.com:carly-kins/dev.git
 ln -s $(pwd)/dev/.oh-my-zsh-custom ~/.oh-my-zsh-custom
