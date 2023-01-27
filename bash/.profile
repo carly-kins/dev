@@ -1,4 +1,19 @@
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Set PATH, MANPATH, etc., for Homebrew.
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Node-Sass and Apple Silicon 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+fi
+
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
@@ -12,22 +27,6 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
-# set prompt color based on the hostname
-GRAY="[1;30m"
-PURPLE="[1;35m"
-RED="[1;31m"
-CYAN="[1;31m"
-YELLOW="[1;33m"
-
-if [[ $HOSTNAME =~ .*(^|\.)(dev)\..* ]]; then
-    HOSTCOLOR=$GRAY
-elif [[ $HOSTNAME =~ .*(^|\.)(qa|stage|test)\..* ]]; then
-    HOSTCOLOR=$YELLOW
-elif [[ $HOSTNAME =~ .*(^|\.)(prod)\..* ]]; then
-    HOSTCOLOR=$RED
-else
-    HOSTCOLOR=$GRAY
-fi
 
 # use git prompt if .git-prompt.sh exists
 if [ -f ".git-prompt.sh" ]; then

@@ -11,13 +11,13 @@ Getting Started
         $ brew install zsh
         $ brew install coreutils
 
-1. Clone the [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) repository into your home directory
+1. Clone the [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) repository into your home directory
 
-        $ git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+        $ git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh ~/.oh-my-zsh
 
 1. Clone this repository
 
-        $ git clone git@github.com:kevinchabreck/dev.git
+        $ git clone git@github.com:carly-kins/dev.git
 
 1. symlink `.oh-my-zsh-custom` and `zshrc.zsh-template` into your home directory
 
