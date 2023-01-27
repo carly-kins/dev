@@ -19,7 +19,4 @@ create_symlinks() {
 create_symlinks
 
 Echo "*** Setting up custom zsh"
-
 ln -s $(pwd)/workspaces/.codespaces/.persistedshare/dotfiles/.oh-my-zsh-custom ~/.oh-my-zsh-custom
-ln -s $(pwd)/workspaces/.codespaces/.persistedshare/dotfiles/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
-
