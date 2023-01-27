@@ -1,9 +1,0 @@
-# osx files
-.DS_Store
-
-# text editor & IDE files
-.idea/
-.vscode/
-
-# ignore personal template files
-jira.txt
