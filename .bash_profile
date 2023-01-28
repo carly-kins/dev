@@ -39,20 +39,20 @@ else
 fi
 
 # history search
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
+#bind '"\e[A": history-search-backward'
+#bind '"\e[B": history-search-forward'
 
 # completion options
-bind "set completion-ignore-case on"
-bind "set show-all-if-ambiguous on"
-bind "set menu-complete-display-prefix on"
+#bind "set completion-ignore-case on"
+#bind "set show-all-if-ambiguous on"
+#bind "set menu-complete-display-prefix on"
 
 # keybinds
-bind '"\e\e[D": backward-word'    # alt + left
-bind '"\e\e[C": forward-word'     # alt + right
-bind '"\eOD": beginning-of-line'  # ctrl + left
-bind '"\eOC": end-of-line'        # ctrl + right
-bind '"\C-?": backward-kill-line' # ctrl + backspace
+#bind '"\e\e[D": backward-word'    # alt + left
+#bind '"\e\e[C": forward-word'     # alt + right
+#bind '"\eOD": beginning-of-line'  # ctrl + left
+#bind '"\eOC": end-of-line'        # ctrl + right
+#bind '"\C-?": backward-kill-line' # ctrl + backspace
 
 # custom aliases
 if [ "$(uname)" == "Darwin" ]; then
