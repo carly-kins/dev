@@ -1,7 +1,7 @@
 # oh-my-zsh variables
 ZSH=$HOME/.oh-my-zsh
 ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
-ZSH_THEME="git-taculous"
+ZSH_THEME="gozilla"
 
 
 # oh-my-zsh and plugins

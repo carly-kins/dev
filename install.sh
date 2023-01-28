@@ -18,5 +18,4 @@ create_symlinks() {
 
 create_symlinks
 
-Echo "*** Setting up custom zsh"
-cp ~/workspaces/.codespaces/.persistedshare/dotfiles/.oh-my-zsh-custom ~/.oh-my-zsh-custom
+
