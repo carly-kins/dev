@@ -21,3 +21,4 @@ A set of scripts and configurations that should work on most linux/unix environm
 
 
 ## Github Codespaces
+https://bea.stollnitz.com/blog/codespaces-terminal/
