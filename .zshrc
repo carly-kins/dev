@@ -1,20 +1,16 @@
-# oh-my-zsh variables
-ZSH=$HOME/.oh-my-zsh
-ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
-ZSH_THEME="gozilla"
+export ZSH="${HOME}/.oh-my-zsh"
 
+# Theme.
+ZSH_THEME="spaceship"
+export SPACESHIP_DIR_TRUNC=0
 
-# oh-my-zsh and plugins
-plugins=(bundler git docker docker-compose python gradle nvm npm)
+# Plugins.
+plugins=(git)
+
 source $ZSH/oh-my-zsh.sh
 
-# path
-PATH=$HOME/bin:/usr/local/sbin:$PATH:/opt/local/bin:/opt/local/sbin
-
-# keybinds
-bindkey "^U" backward-kill-line
-bindkey "\\x1b\\x62" emacs-backward-word
-bindkey "\\x1b\\x66" emacs-forward-word
+# Set colors for LS_COLORS.
+eval `dircolors ~/.dircolors`
 
 # custom aliases
 # alias ls="ls -lahG"
