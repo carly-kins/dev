@@ -14,5 +14,3 @@ eval `dircolors ~/.dircolors`
 
 # environment variables
 export EDITOR="code"
-
-source /workspaces/.codespaces/.persistedshare/dotfiles/.bash_profile
