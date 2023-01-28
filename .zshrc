@@ -3,6 +3,7 @@ ZSH=$HOME/.oh-my-zsh
 ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
 ZSH_THEME="git-taculous"
 
+
 # oh-my-zsh and plugins
 plugins=(bundler git docker docker-compose python gradle nvm npm)
 source $ZSH/oh-my-zsh.sh
