@@ -1,9 +1,6 @@
-dev
-===
-
 A personal repository for maintaining development-related things (scripts, profiles, etc.)
 
-# NEW MACHINE!
+# New Machine Setup
 
 ## bash
 
@@ -48,6 +45,6 @@ A few zsh/oh-my-zsh customizations. Much thanks to [Duprasville](https://github.
 
         $ chsh -s /bin/zsh
 
-## Github Codespaces
+# Github Codespaces
 https://bea.stollnitz.com/blog/codespaces-terminal/
 
