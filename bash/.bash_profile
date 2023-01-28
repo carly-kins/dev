@@ -3,16 +3,16 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Set PATH, MANPATH, etc., for Homebrew.
-#eval "$(/opt/homebrew/bin/brew shellenv)"
+#Set PATH, MANPATH, etc., for Homebrew.
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Node-Sass and Apple Silicon 
-#export PYENV_ROOT="$HOME/.pyenv"
-#export PATH="$PYENV_ROOT/shims:$PATH"
-#if command -v pyenv 1>/dev/null 2>&1; then
-#  eval "$(pyenv init --path)"
-#  eval "$(pyenv init -)"
-#fi
+#Node-Sass and Apple Silicon 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+fi
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
@@ -39,29 +39,29 @@ else
 fi
 
 # history search
-#bind '"\e[A": history-search-backward'
-#bind '"\e[B": history-search-forward'
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
 
 # completion options
-#bind "set completion-ignore-case on"
-#bind "set show-all-if-ambiguous on"
-#bind "set menu-complete-display-prefix on"
+bind "set completion-ignore-case on"
+bind "set show-all-if-ambiguous on"
+bind "set menu-complete-display-prefix on"
 
 # keybinds
-#bind '"\e\e[D": backward-word'    # alt + left
-#bind '"\e\e[C": forward-word'     # alt + right
-#bind '"\eOD": beginning-of-line'  # ctrl + left
-#bind '"\eOC": end-of-line'        # ctrl + right
-#bind '"\C-?": backward-kill-line' # ctrl + backspace
+bind '"\e\e[D": backward-word'    # alt + left
+bind '"\e\e[C": forward-word'     # alt + right
+bind '"\eOD": beginning-of-line'  # ctrl + left
+bind '"\eOC": end-of-line'        # ctrl + right
+bind '"\C-?": backward-kill-line' # ctrl + backspace
 
 # custom aliases
-#if [ "$(uname)" == "Darwin" ]; then
-#    alias ls="ls -G"
-#    alias la="ls -lahG"
-#else
-#    alias ls="ls --color"
-#    alias la="ls -lah --color --group-directories --sort=version"
-#fi
+if [ "$(uname)" == "Darwin" ]; then
+    alias ls="ls -G"
+    alias la="ls -lahG"
+else
+    alias ls="ls --color"
+    alias la="ls -lah --color --group-directories --sort=version"
+fi
 alias gs="git status"
 alias p="python"
 alias dkr="docker"
