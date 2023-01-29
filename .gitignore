@@ -1,4 +1,5 @@
 .DS_Store
-./.oh-my-zsh-custom/plugins/zsh-autosuggestions
-./.oh-my-zsh-custom/plugins/zsh-syntax-highlighting
-./.oh-my-zsh-custom/themes
+.oh-my-zsh-custom/plugins/zsh-autosuggestions/
+.oh-my-zsh-custom/plugins/zsh-syntax-highlighting/
+.oh-my-zsh-custom/themes/
+.oh-my-zsh-custom/themes/spaceship.zsh-theme
