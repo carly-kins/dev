@@ -7,9 +7,13 @@ An automated setup to install oh-my-zsh, nvm, homebrew, and custom .bash_profile
 ## Getting Started
 
 1. Clone this repositry to your home directory. 
-2. Run `dev/new-machine/setup.sh`
-3. Close your terminal are reopen!
+2. Run 
+        $ dev/new-machine/setup.sh
 
+3. Close your terminal are reopen!
+4. Import `carly-iterm2.json` into iterm. This will be under `iterm2 > settings > profiles`
+
+## Helpful Reminders
 To change shell to zsh
 
         $ chsh -s /bin/zsh
