@@ -19,7 +19,7 @@
 
 #create_symlinks
 ln -s $(pwd)/.oh-my-zsh-custom ~
-ln -s $(pwd)/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
+ln -s $(pwd)/.zshrc ~/.zshrc
 #ln -s $(pwd)/.oh-my-zsh-custom/.dircolors ~/.dircolors
 
 echo "Initializing conda for zsh."
