@@ -144,6 +144,7 @@ alias vdiff="vimdiff"
 alias path="realpath"
 alias cpkey="ssh-copy-id -i ~/.ssh/id_rsa"
 alias pages="open -a pages"
+alias gitroot='cd $(git rev-parse --show-toplevel)'
 
 # Set colors for LS_COLORS.
 

@@ -1,57 +1,23 @@
-A personal repository for maintaining development-related things (scripts, profiles, etc.)
+A personal repository for maintaining development-related things (scripts, profiles, etc.). Thanks to [Kevin](https://github.com/kevinchabreck) and [Adam](https://github.com/aenewton) for the help! 
 
 # New Machine Setup
 
-An automated setup to 
+An automated setup to install oh-my-zsh, nvm, homebrew, and custom .bash_profiles. It also configures git!
 
 ## Getting Started
 
 1. Clone this repositry to your home directory. 
+2. Run `dev/new-machine/setup.sh`
+3. Close your terminal are reopen!
 
-
-## bash
-
-A set of scripts and configurations that should work on most linux/unix environments
-## Getting Started
-
-1. Add [`.bash_profile`](.bash_profile) to the home directory
-	- **local:**  `ln -s $(pwd)/.profile ~/.profile`
-	- **remote:** `wget -O ~/.bash_profile https://raw.githubusercontent.com/carly-kins/dev/master/.bash_profile`
-
-1. Add [`.git-prompt.sh`](.git-prompt.sh) to the home directory
-	- **local:**  `cp .git-prompt.sh ~/.git-prompt.sh`
-	- **remote:** `wget -O ~/.git-prompt.sh https://raw.githubusercontent.com/carly-kins/dev/master/.git-prompt.sh`
-
-
-## oh-my-zsh-custom
-
-
-A few zsh/oh-my-zsh customizations. Much thanks to [Duprasville](https://github.com/duprasville/oh-my-zsh-custom).
-
-
-1. Install Zsh and Coreutils (via [Homebrew](http://brew.sh/))
-
-        $ brew install zsh
-        $ brew install coreutils
-
-1. Clone the [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) repository into your home directory
-
-        $ git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
-
-1. Clone this repository
-
-        $ git clone git@github.com:carly-kins/dev.git
-
-1. symlink `.oh-my-zsh-custom` and `zshrc.zsh-template` into your home directory
-
-		$ ln -s $(pwd)/dev/.oh-my-zsh-custom ~/.oh-my-zsh-custom
-		$ ln -s $(pwd)/dev/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
-		$ ln -s $(pwd)/dev/.oh-my-zsh-custom/.dircolors ~/.dircolors
-
-1. Change shell to zsh
+To change shell to zsh
 
         $ chsh -s /bin/zsh
 
+To change shell to bash
+
+        $ chsh -s /bin/bash
+
 # Github Codespaces
-https://bea.stollnitz.com/blog/codespaces-terminal/
+Codespaces will automatically pull the dotfiles from the root of this repository and configure them using the `install.sh` script. I used this [guide](https://bea.stollnitz.com/blog/codespaces-terminal/) as inspriation for my setup. 
 
