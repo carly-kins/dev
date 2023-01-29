@@ -1,11 +1,11 @@
 #!/bin/bash
 
-NEW="dev/new-machine/dotfiles"
-DEV="dev/.oh-my-zsh-custom"
+NEW = "dev/new-machine/dotfiles"
+DEV = "dev/.oh-my-zsh-custom"
 
 ln -s $NEW/.bash_profile ~
 ln -s $NEW/.git-prompt ~
 
 ln -s $DEV ~
 ln -s $DEV/templates/zshrc.zsh-template ~/.zshrc
-#ln -s $DEV/.dircolors ~/.dircolors
+ln -s $DEV/.dircolors ~/.dircolors
