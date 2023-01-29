@@ -104,7 +104,7 @@ bindkey "^U" backward-kill-line
 
 # custom aliases
 # alias ls="ls -lahG"
-alias ls="gls -lah --color --group-directories"
+alias ls="ls -lah --color --group-directories"
 alias c="code"
 alias p="python3"
 alias o="open"
@@ -117,13 +117,6 @@ alias vdiff="vimdiff"
 alias path="realpath"
 alias cpkey="ssh-copy-id -i ~/.ssh/id_rsa"
 alias pages="open -a pages"
-
-# environment variables
-export EDITOR="code"
-
-# Set colors for LS_COLORS.
-
-eval `gdircolors ~/.dircolors` 
 
 # environment variables
 export EDITOR="code"

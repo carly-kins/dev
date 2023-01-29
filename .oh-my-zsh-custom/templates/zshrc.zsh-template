@@ -145,9 +145,6 @@ alias path="realpath"
 alias cpkey="ssh-copy-id -i ~/.ssh/id_rsa"
 alias pages="open -a pages"
 
-# environment variables
-export EDITOR="code"
-
 # Set colors for LS_COLORS.
 
 eval `gdircolors ~/.dircolors` 
