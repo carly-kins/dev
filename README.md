@@ -22,6 +22,11 @@ To change shell to bash
 
         $ chsh -s /bin/bash
 
+To update spaceship run
+
+        $ git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
+        $ ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+
 # Github Codespaces
 Codespaces will automatically pull the dotfiles from the root of this repository and configure them using the `install.sh` script. I used this [guide](https://bea.stollnitz.com/blog/codespaces-terminal/) as inspriation for my setup. 
 
