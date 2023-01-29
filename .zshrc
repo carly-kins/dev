@@ -9,7 +9,19 @@ DISABLE_AUTO_TITLE="true"
 
 ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
 
-plugins=(bundler git docker docker-compose python gradle brew table)
+plugins=(
+    bundler 
+    git 
+    docker 
+    docker-compose 
+    python gradle 
+    brew table 
+    zsh-autosuggestions 
+    web-search 
+    jsontools 
+    z 
+    zsh-syntax-highlighting
+    )
 
 source $ZSH/oh-my-zsh.sh
 
@@ -31,4 +43,3 @@ alias pages="open -a pages"
 alias gitroot='cd $(git rev-parse --show-toplevel)'
 
 eval `dircolors ~/.dircolors` 
-
