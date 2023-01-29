@@ -131,7 +131,7 @@ bindkey "^U" backward-kill-line
 
 # custom aliases
 # alias ls="ls -lahG"
-alias ls="gls -lah --color --group-directories"
+alias ls="ls -lah --color --group-directories"
 alias c="code"
 alias p="python3"
 alias o="open"
