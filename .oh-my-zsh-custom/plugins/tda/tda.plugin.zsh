@@ -1,1 +1,0 @@
-alias tda="java -Xmx2G -jar /Applications/tda-bin-2.2/tda.jar"

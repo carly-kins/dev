@@ -2,10 +2,16 @@ A personal repository for maintaining development-related things (scripts, profi
 
 # New Machine Setup
 
+An automated setup to 
+
+## Getting Started
+
+1. Clone this repositry to your home directory. 
+
+
 ## bash
 
 A set of scripts and configurations that should work on most linux/unix environments
-
 ## Getting Started
 
 1. Add [`.bash_profile`](.bash_profile) to the home directory
@@ -40,6 +46,7 @@ A few zsh/oh-my-zsh customizations. Much thanks to [Duprasville](https://github.
 
 		$ ln -s $(pwd)/dev/.oh-my-zsh-custom ~/.oh-my-zsh-custom
 		$ ln -s $(pwd)/dev/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
+		$ ln -s $(pwd)/dev/.oh-my-zsh-custom/.dircolors ~/.dircolors
 
 1. Change shell to zsh
 

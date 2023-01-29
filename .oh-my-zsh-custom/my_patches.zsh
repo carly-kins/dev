@@ -10,3 +10,4 @@ function copyline {
 }
 zle -N copyline
 bindkey '^[copyline' copyline
+
