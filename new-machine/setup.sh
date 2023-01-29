@@ -12,7 +12,8 @@ cd dev/new-machine
 Echo "*** Installing nvm"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 
-./install_homebrew.sh
 ./configure_git.sh
+./install_homebrew.sh
+
 
 
