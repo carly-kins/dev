@@ -18,8 +18,10 @@
 
 #create_symlinks
 
+script_dir=$(dirname "$(readlink -f "$0")")
+
 ln -s $(pwd)/.oh-my-zsh-custom ~
-ln -s $(pwd)/.oh-my-zsh-custom/codespaces/.zshrc ~.zshrc
+ln -s $script_dir/.oh-my-zsh-custom/codespaces/.zshrc ~.zshrc
 
 echo "Initializing conda for zsh."
 conda init zsh
