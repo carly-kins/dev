@@ -17,7 +17,7 @@ create_symlinks() {
     done
 }
 
-if $script_dir=$CODESPACES 
+if [$script_dir -eq $CODESPACES]
 then
     create_symlinks
     ln -s $(pwd)/.oh-my-zsh-custom ~
