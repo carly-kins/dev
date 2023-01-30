@@ -1,8 +1,9 @@
 #!/bin/bash
 
+CODESPACES="/workspaces/.codespaces/.persistedshare/dotfiles"
+script_dir=$(dirname "$(readlink -f "$0")")
+
 create_symlinks() {
-   #Get the directory in which this script lives.
-    script_dir=$(dirname "$(readlink -f "$0")")
 
     #Get a list of all files in this directory that start with a dot.
     files=$(find -maxdepth 1 -type f -name ".*")
@@ -16,9 +17,12 @@ create_symlinks() {
     done
 }
 
-create_symlinks
+if $script_dir=$CODESPACES 
+then
+    create_symlinks
+    ln -s $(pwd)/.oh-my-zsh-custom ~
+else 
+    echo "Not in Codespaces"
+fi
 
-ln -s $(pwd)/.oh-my-zsh-custom ~
 
-echo "Initializing conda for zsh."
-conda init zsh
