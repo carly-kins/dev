@@ -1,4 +1,4 @@
-A personal repository for maintaining development-related things (scripts, profiles, etc.). Thanks to [Kevin](https://github.com/kevinchabreck) and [Adam](https://github.com/aenewton) for the help! 
+A personal repository for maintaining development-related things (scripts, profiles, etc.). Thanks to [Kevin](https://github.com/kevinchabreck), [Adam](https://github.com/aenewton), and [Fed](https://github.com/fmenozzi) for the help! 
 
 # New Machine Setup
 
@@ -11,7 +11,7 @@ An automated setup to install oh-my-zsh, nvm, homebrew, and custom .bash_profile
         $ sh install.sh
 
 3. Close your terminal are reopen!
-4. Import `carly-iterm2.json` into iterm. This will be under `iterm2 > settings > profiles`
+4. Import `carlyIterm2.json` into iterm. This will be under `iterm2 > settings > profiles`
 
 ## Helpful Reminders
 To change shell to zsh
@@ -22,14 +22,10 @@ To change shell to bash
 
         $ chsh -s /bin/bash
 
-To update plugins and custom fonts
-
-        git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
-        ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
-        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM}/plugins/zsh-autosuggestions
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting
-
 
 # Github Codespaces
 Codespaces will automatically pull the zsh dotfiles from the root of this repository and configure them using the `install.sh` script. I used this [guide](https://bea.stollnitz.com/blog/codespaces-terminal/) as inspriation for my setup. 
+
+# Other notes 
+Slack theme: (Based off Catpuccin - #21262D,#F8F8FA,#A6E3A1,#1E1E2E,#11111B,#CDD6F4,#A6E3A1,#DB889F,#0D1117,#CDD6F4)
 
