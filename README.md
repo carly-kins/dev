@@ -6,9 +6,9 @@ An automated setup to install oh-my-zsh, nvm, homebrew, and custom .bash_profile
 
 ## Getting Started
 
-1. Clone this repositry to your home directory. 
+1. Clone this repositry. 
 2. Run 
-        $ dev/new-machine/setup.sh
+        $ sh install.sh
 
 3. Close your terminal are reopen!
 4. Import `carly-iterm2.json` into iterm. This will be under `iterm2 > settings > profiles`
@@ -31,5 +31,5 @@ To update plugins and custom fonts
 
 
 # Github Codespaces
-Codespaces will automatically pull the dotfiles from the root of this repository and configure them using the `install.sh` script. I used this [guide](https://bea.stollnitz.com/blog/codespaces-terminal/) as inspriation for my setup. 
+Codespaces will automatically pull the zsh dotfiles from the root of this repository and configure them using the `install.sh` script. I used this [guide](https://bea.stollnitz.com/blog/codespaces-terminal/) as inspriation for my setup. 
 
