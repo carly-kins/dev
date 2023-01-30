@@ -17,10 +17,17 @@ create_symlinks() {
     done
 }
 
-if [ $script_dir -eq $CODESPACES ]
+if [ $script_dir=$CODESPACES ]
 then
-    create_symlinks
-    ln -s $(pwd)/.oh-my-zsh-custom ~
+    # Need to make sure that the file does not exist in ~
+    rm -rf ~/.oh-my-zsh-custom
+    ln -s $script_dir/.oh-my-zsh-custom ~
+    # Need to make sure that the file does not exist in ~
+    rm -rf ~/.zshrc
+    ln -s $script_dir/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
+    # Install spaceship theme
+    git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
+    ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
 else 
     echo "Not in Codespaces"
 fi
