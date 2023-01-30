@@ -2,6 +2,7 @@
 
 CODESPACES="/workspaces/.codespaces/.persistedshare/dotfiles"
 script_dir=$(dirname "$(readlink -f "$0")")
+ZSH_CUSTOM="$HOME/.oh-my-zsh-custom"
 
 create_symlinks() {
 
@@ -20,25 +21,19 @@ create_symlinks() {
 if [ $script_dir=$CODESPACES ]
 then
     # Need to make sure that the file does not exist in ~
-    rm -rf ~/.oh-my-zsh-custom
-    ln -s $script_dir/.oh-my-zsh-custom ~
+    rm -rf $HOME/.oh-my-zsh-custom
+    ln -s $script_dir/.oh-my-zsh-custom $HOME
     # Need to make sure that the file does not exist in ~
-    rm -rf ~/.zshrc
-    ln -s $script_dir/.oh-my-zsh-custom/templates/zshrc.zsh-template ~/.zshrc
-    # Install spaceship theme
-    cd ~
-    echo "Installing fonts."
-    FONT_DIR="$HOME/.fonts"
-    git clone https://github.com/powerline/fonts.git $FONT_DIR --depth=1
-    cd $FONT_DIR
-    ./install.sh
+    rm -rf $HOME/.zshrc
+    ln -s $script_dir/.oh-my-zsh-custom/templates/zshrc.zsh-template $HOME/.zshrc
+    # Install spaceship theme and plugins
 
     echo "Setting up the Spaceship theme."
-    ZSH_CUSTOM="$HOME/.oh-my-zsh-custom"
+    
     git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
     ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions" --depth=1
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" --depth=1
 
 else 
     echo "Not in Codespaces"
