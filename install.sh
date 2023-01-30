@@ -6,20 +6,6 @@ ZSH_CUSTOM="$HOME/.oh-my-zsh-custom"
 
 create_symlinks() {
 
-    #Get a list of all files in this directory that start with a dot.
-    files=$(find -maxdepth 1 -type f -name ".*")
-
-    # Create a symbolic link to each file in the home directory.
-    for file in $files; do
-        name=$(basename $file)
-        echo "Creating symlink to $name in home directory."
-        rm -rf ~/$name
-        ln -s $script_dir/$name ~/$name
-    done
-}
-
-if [ $script_dir=$CODESPACES ]
-then
     # Need to make sure that the file does not exist in ~
     rm -rf $HOME/.oh-my-zsh-custom
     ln -s $script_dir/.oh-my-zsh-custom $HOME
@@ -35,8 +21,20 @@ then
     git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions" --depth=1
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" --depth=1
 
+}
+
+
+if [ $script_dir == $CODESPACES ]
+then
+    echo "In Codespaces"
+    create_symlinks
 else 
     echo "Not in Codespaces"
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    create_symlinks
+    ln -s $script_dir/new-machine/dotfiles/.bash_profile $HOME
+    ln -s $script_dir/new-machine/dotfiles/.git-prompt $HOME
+    $script_dir/new-machine/install_homebrew.sh
+    $script_dir/new-machine/configure_git.sh
+    echo "Close your terminal and reopen :) - Don't forget to update your iterm files!"
 fi
-
-
