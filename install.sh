@@ -24,7 +24,7 @@ create_symlinks() {
 }
 
 
-if [[ $script_dir == $CODESPACES ]];
+if [ $script_dir = $CODESPACES ];
 then
     echo "In Codespaces"
     create_symlinks
