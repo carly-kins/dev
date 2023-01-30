@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CODESPACES="/workspaces/.codespaces/.persistedshare/dotfiles"
-script_dir=$(dirname "$(readlink -f "$0")")
+script_dir="$(dirname "$(readlink -f "$0")")"
 ZSH_CUSTOM="$HOME/.oh-my-zsh-custom"
 
 create_symlinks() {
