@@ -23,7 +23,7 @@ create_symlinks() {
 
 }
 
-
+#TODO: Replace with case statement https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_03.html
 if [ $script_dir = $CODESPACES ];
 then
     echo "In Codespaces"
