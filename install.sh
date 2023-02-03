@@ -35,6 +35,5 @@ else
     ln -s $script_dir/new-machine/dotfiles/.bash_profile $HOME
     ln -s $script_dir/new-machine/dotfiles/.git-prompt $HOME
     $script_dir/new-machine/install_homebrew.sh
-    $script_dir/new-machine/configure_git.sh
     echo "Close your terminal and reopen :) - Don't forget to update your iterm files!"
 fi
