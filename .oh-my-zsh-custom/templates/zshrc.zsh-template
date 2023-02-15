@@ -120,8 +120,9 @@ plugins=(
     npm 
     nvm 
     z 
-    zsh-syntax-highlighting
-    timeCalc
+    zsh-syntax-highlighting 
+    timeCalc 
+    fed 
     )
 
 source $ZSH/oh-my-zsh.sh
