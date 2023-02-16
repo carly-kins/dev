@@ -19,9 +19,13 @@
       "block_suffix": "\n",
       "color": "#94e2d5",
       "bold": true
+      
     },
     "h1": {
-      "prefix": "# "
+      "prefix": "# ",
+      "color": "#cdd6f4",
+      "background_color": "#7287fd"
+      
     },
     "h2": {
       "prefix": "## "
@@ -43,23 +47,24 @@
       "crossed_out": true
     },
     "emph": {
-      "color": "#cdd6f4",
+      "color": "#ee99a0",
       "italic": true
     },
     "strong": {
-      "color": "#cdd6f4",
+      "color": "#eed49f",
       "bold": true
     },
     "hr": {
-      "color": "#cdd6f4",
-      "format": "\n--------\n"
+      "color": "#363a4f",
+      "format": "\n__________________________________\n"
     },
     "item": {
-      "block_prefix": "• "
+      "block_prefix": "• ",
+      "color": "#89dceb"
     },
     "enumeration": {
       "block_prefix": ". ",
-      "color": "#74c7ec"
+      "color": "#89dceb"
     },
     "task": {
       "ticked": "[✓] ",

@@ -1,7 +1,5 @@
 # Flexbox Containers
 
----
-
 For more info check out [Flexbox CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 
 Flexbox is applied to the container (usually a `<div>`) 
@@ -13,19 +11,15 @@ Flexbox is applied to the container (usually a `<div>`)
 .container {
   display: flex; /* or inline-flex */
 }
-
 ```
-
 In that container you have stuff. Flexbox determines how the things are arranged.
 
 ## flex-direction
-
 ```
 .container {
   flex-direction: row !default
 }
 ```
-
 ``row``                                             ```row-reverse```
 ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐         ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ 
 │ ``1``     │ │ ``2``     │ │ ``3``     │ │ ``4``     │         │ ``4``     │ │ ``3``     │ │ ``2``     │ │ ``1``     │
@@ -47,56 +41,53 @@ In that container you have stuff. Flexbox determines how the things are arranged
 └───────┘                                       └───────┘
 
 ## flex-wrap
-
 By default, flex items will all try to fit onto one line. You can change that and allow the items to wrap as needed with this property.
-
 ```
 .container {
   flex-wrap: nowrap !default
 }
-
 ```
 - ``nowrap``: all flex items will be on one line
 - ``wrap``: flex items will wrap onto multiple lines, from top to bottom.
 - ``wrap-reverse``: flex items will wrap onto multiple lines from bottom to top.
 
-
 ## flex-flow
-
 This is a shorthand for the flex-direction and flex-wrap properties, which together define the flex container’s main and cross axes. The default value is ``row nowrap``.
- 
- ```
+```
 .container {
   flex-flow: flex-direction flex-wrap;
 }
 ```
-
 ## justify-content
-
 ```
 .container {
   justify-content: flex-start default! ... + safe | unsafe;
 }
 ```
 ``flex-start``
-┌───────┐ ┌───────┐ ┌───────┐
-│ ``1``     │ │ ``2``     │ │ ``3``     │
-└───────┘ └───────┘ └───────┘
-
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│┌───────┐ ┌───────┐ ┌───────┐                                                          │
+││ ``1``     │ │ ``2``     │ │ ``3``     │                                                          │
+│└───────┘ └───────┘ └───────┘                                                          │
+└───────────────────────────────────────────────────────────────────────────────────────┘
 ``flex-end``
-.                                                          ┌───────┐ ┌───────┐ ┌───────┐        
-.                                                          │ ``1``     │ │ ``2``     │ │ ``3``     │        
-.                                                          └───────┘ └───────┘ └───────┘        
-
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│                                                          ┌───────┐ ┌───────┐ ┌───────┐│        
+│                                                          │ ``1``     │ │ ``2``     │ │ ``3``     ││        
+│                                                          └───────┘ └───────┘ └───────┘│       
+└───────────────────────────────────────────────────────────────────────────────────────┘
 ``center``
-.                            ┌───────┐ ┌───────┐ ┌───────┐
-.                            │ ``1``     │ │ ``2``     │ │ ``3``     │
-.                            └───────┘ └───────┘ └───────┘
-
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│                            ┌───────┐ ┌───────┐ ┌───────┐                              │
+│                            │ ``1``     │ │ ``2``     │ │ ``3``     │                              │
+│                            └───────┘ └───────┘ └───────┘                              │
+└───────────────────────────────────────────────────────────────────────────────────────┘
 ``space-between``
-┌───────┐                             ┌───────┐                               ┌───────┐
-│ ``1``     │                             │ ``2``     │                               │ ``3``     │
-└───────┘                             └───────┘                               └───────┘
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│┌───────┐                             ┌───────┐                               ┌───────┐│
+││ ``1``     │                             │ ``2``     │                               │ ``3``     ││
+│└───────┘                             └───────┘                               └───────┘│
+└───────────────────────────────────────────────────────────────────────────────────────┘
 
 - ``left``: items are packed toward left edge of the container, unless that doesn’t make sense with the flex-direction, then it behaves like start.
 - ``right``: items are packed toward right edge of the container, unless that doesn’t make sense with the flex-direction, then it behaves like end.
@@ -104,7 +95,6 @@ This is a shorthand for the flex-direction and flex-wrap properties, which toget
 - ``space-evenly``: items are distributed so that the spacing between any two items (and the space to the edges) is equal.
 
 ## align-items
-
 ```
 .container {
   align-items: stretch !default + ... safe | unsafe;
@@ -155,11 +145,8 @@ This is a shorthand for the flex-direction and flex-wrap properties, which toget
 - ``space-around``
 - ``space-evenly``
 
-
 ## align-content
-
 This aligns a flex container’s lines within when there is extra space in the cross-axis, similar to how ``justify-content`` aligns individual items within the main-axis.
-
 ```
 .container {
   align-content: flex-start + ... safe | unsafe;
@@ -177,9 +164,7 @@ This aligns a flex container’s lines within when there is extra space in the c
 - ``stretch``: lines stretch to take up the remaining space
 
 ## gap, row-gap, column-gap
-
 The gap property explicitly controls the space between flex items. It applies that spacing only between items not on the outer edges.
-
 ```
 .container {
   display: flex;
@@ -193,3 +178,45 @@ The gap property explicitly controls the space between flex items. It applies th
 The behavior could be thought of as a minimum gutter, as if the gutter is bigger somehow (because of something like ``justify-content: space-between;``) then the gap will only take effect if that space would end up smaller.
 
 It is not exclusively for flexbox, gap works in grid and multi-column layout as well.
+
+
+# Flexbox Children
+
+For more info check out [Flexbox CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+
+This guide is about the things inside the ``container``
+
+## order
+```
+.item {
+  order: 5; /* default is 0 */
+}
+```
+┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐     │     ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ 
+│ ``1``     │ │ ``1``     │ │ ``2``     │ │ ``3``     │     │     │ ``-1``    │ │ ``3``     │ │ ``100``   │ │ ``10000`` │
+└───────┘ └───────┘ └───────┘ └───────┘     │     └───────┘ └───────┘ └───────┘ └───────┘
+
+## flex 
+This is the shorthad for flex-grow, flex-shrink, and flex-baisis
+```
+.item {
+  flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
+}
+```
+┌───────┐ ┌───────────┐ ┌───────┐ ┌───────┐
+│ ``1``     │ │ ``2``         │ │ ``1``     │ │ ``1``     │
+└───────┘ └───────────┘ └───────┘ └───────┘
+
+> What is flex baisis? 
+
+>This defines the default size of an element before the remaining space is distributed. It can be a length (e.g. 20%, 5rem, etc.) or a keyword. The auto keyword means “look at my width or height property” (which was temporarily done by the main-size keyword until deprecated). The content keyword means “size it based on the item’s content” – this keyword isn’t well supported yet, so it’s hard to test and harder to know what its brethren max-content, min-content, and fit-content do.
+
+>If set to 0, the extra space around content isn’t factored in. If set to auto, the extra space is distributed based on its ``flex-grow`` value.
+
+## align-self
+override the ``align-items`` specified at the container level 
+```
+.item {
+  align-self: auto | flex-start | flex-end | center | baseline | stretch;
+}
+```

@@ -6,12 +6,12 @@ function fed() {
     grid)
       glow $ZSH_CUSTOM_FED/grid.md -w 150 -s $STYLE
       ;;
-    flex-container)
-      glow $ZSH_CUSTOM_FED/flexbox-container.md -w 150 -s $STYLE
-      ;; 
-    flex-child)
-      glow $ZSH_CUSTOM_FED/flexbox-child.md -w 150 -s $STYLE
-      ;;   
+    flex)
+      glow $ZSH_CUSTOM_FED/flex.md -w 150 -s $STYLE
+      ;;
+    git)
+      glow $ZSH_CUSTOM_FED/git.md -w 150 -s $STYLE
+      ;;     
     *)
       echo "Unknown command"
       ;;

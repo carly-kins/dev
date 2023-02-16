@@ -1,10 +1,5 @@
 # Bootstrap Grid System
 
----
-
-```
-.container
-```
 00      01       02       03       04       05       06       07       08       09       10       11       12
 ┌────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┐
 │``.col-12`` │``.col-12`` │.``col-12`` │``.col-12`` │``.col-12`` │``.col-12`` │``.col-12`` │``.col-12`` │``.col-12`` │``.col-12`` │``.col-12`` │``.col-12`` │ ``.row``
@@ -24,8 +19,6 @@ How this works:
 4. The size specified effects where it will wrap/no-wrap. 
     - ex. Columns start at 50% wide on mobile (they will stack) and bump up to 33.3% wide on desktop (they will not stack)
 
-        ---
-
         ```
         <div class="row">
             <div class="col-6 col-md-4"></div>
@@ -33,9 +26,6 @@ How this works:
             <div class="col-6 col-md-4"></div>
         </div>
         ```
-
-        ---
-
 
 
 |                       	| **Xtra-Small** 	| **Small** 	| **Medium** 	| **Large** 	| **Xtra-Large** 	|
@@ -52,7 +42,6 @@ How this works:
 - Offsetting can be done with `.offset-md-* classes.` These classes increase the left margin of a column by * columns. For example, `.offset-md-4` moves .col-md-4 over four columns.
     - However, putting a `margin-left: auto;` or a `margin-right: auto;` may be better. In this case, the total column can equal < 12 if you nest the entire structure in a `.col-12`; the auto margin will fill in the rest.
 
-        ---
 
         ```
         <div class="row">
@@ -65,5 +54,3 @@ How this works:
             </div>
         </div>
         ```
-
-        ---
