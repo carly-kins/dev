@@ -159,3 +159,5 @@ $ ssh-add --apple-use-keychain ~/.ssh/{ssh-key-name}
 
 -[Add the SSH key to your account on GitHub.](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account )
 -[Add the SSH key to your account on Bitbucket.](https://support.atlassian.com/bitbucket-cloud/docs/set-up-personal-ssh-keys-on-macos/#Provide-Bitbucket-Cloud-with-your-public-key)
+
+keywords: git cli

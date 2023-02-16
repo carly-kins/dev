@@ -11,7 +11,6 @@
 │``.col-3``                    │``.col-3``                    │``.col-3``                    │``.col-3``                    │ ``.row``
 └──────────────────────────┴──────────────────────────┴──────────────────────────┴──────────────────────────┘
 
-
 How this works: 
 1. Create a `<div class="container">`
 2. In that container, create a `<div class="row">`
@@ -19,7 +18,7 @@ How this works:
 4. The size specified effects where it will wrap/no-wrap. 
     - ex. Columns start at 50% wide on mobile (they will stack) and bump up to 33.3% wide on desktop (they will not stack)
 
-        ```
+        ```html
         <div class="row">
             <div class="col-6 col-md-4"></div>
             <div class="col-6 col-md-4"></div>
@@ -43,7 +42,7 @@ How this works:
     - However, putting a `margin-left: auto;` or a `margin-right: auto;` may be better. In this case, the total column can equal < 12 if you nest the entire structure in a `.col-12`; the auto margin will fill in the rest.
 
 
-        ```
+        ```html
         <div class="row">
             <div class="col-12">
                 <div class="row">
@@ -54,3 +53,5 @@ How this works:
             </div>
         </div>
         ```
+
+keywords: bootstrap grid css

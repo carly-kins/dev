@@ -7,7 +7,7 @@ Flexbox is applied to the container (usually a `<div>`)
 ┌─────────────────────────────────────────┐
 │ ``I'm a container!``                        │
 └─────────────────────────────────────────┘
-```
+```css
 .container {
   display: flex; /* or inline-flex */
 }
@@ -15,7 +15,7 @@ Flexbox is applied to the container (usually a `<div>`)
 In that container you have stuff. Flexbox determines how the things are arranged.
 
 ## flex-direction
-```
+```css
 .container {
   flex-direction: row !default
 }
@@ -42,7 +42,7 @@ In that container you have stuff. Flexbox determines how the things are arranged
 
 ## flex-wrap
 By default, flex items will all try to fit onto one line. You can change that and allow the items to wrap as needed with this property.
-```
+```css
 .container {
   flex-wrap: nowrap !default
 }
@@ -53,13 +53,13 @@ By default, flex items will all try to fit onto one line. You can change that an
 
 ## flex-flow
 This is a shorthand for the flex-direction and flex-wrap properties, which together define the flex container’s main and cross axes. The default value is ``row nowrap``.
-```
+```css
 .container {
   flex-flow: flex-direction flex-wrap;
 }
 ```
 ## justify-content
-```
+```css
 .container {
   justify-content: flex-start default! ... + safe | unsafe;
 }
@@ -95,7 +95,7 @@ This is a shorthand for the flex-direction and flex-wrap properties, which toget
 - ``space-evenly``: items are distributed so that the spacing between any two items (and the space to the edges) is equal.
 
 ## align-items
-```
+```css
 .container {
   align-items: stretch !default + ... safe | unsafe;
 }
@@ -147,7 +147,7 @@ This is a shorthand for the flex-direction and flex-wrap properties, which toget
 
 ## align-content
 This aligns a flex container’s lines within when there is extra space in the cross-axis, similar to how ``justify-content`` aligns individual items within the main-axis.
-```
+```css
 .container {
   align-content: flex-start + ... safe | unsafe;
 }
@@ -165,7 +165,7 @@ This aligns a flex container’s lines within when there is extra space in the c
 
 ## gap, row-gap, column-gap
 The gap property explicitly controls the space between flex items. It applies that spacing only between items not on the outer edges.
-```
+```css
 .container {
   display: flex;
   ...
@@ -187,7 +187,7 @@ For more info check out [Flexbox CSS Tricks](https://css-tricks.com/snippets/css
 This guide is about the things inside the ``container``
 
 ## order
-```
+```css
 .item {
   order: 5; /* default is 0 */
 }
@@ -198,7 +198,7 @@ This guide is about the things inside the ``container``
 
 ## flex 
 This is the shorthad for flex-grow, flex-shrink, and flex-baisis
-```
+```css
 .item {
   flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
 }
@@ -215,8 +215,9 @@ This is the shorthad for flex-grow, flex-shrink, and flex-baisis
 
 ## align-self
 override the ``align-items`` specified at the container level 
-```
+```css
 .item {
   align-self: auto | flex-start | flex-end | center | baseline | stretch;
 }
 ```
+keywords: flex-box flex css
