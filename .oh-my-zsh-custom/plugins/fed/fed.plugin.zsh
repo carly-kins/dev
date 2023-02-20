@@ -10,11 +10,11 @@ function hint() {
   -l)
     glow ${DEV}/table-of-contents.md -w 150 -s $STYLE
     ;;
-  -d)
-    glow $DEVHINTS_URL -w 150 -s $STYLE
+  superscript)
+    open https://lingojam.com/SuperscriptGenerator #may make another plugin for "resources"
     ;;
-  -p)
-    glow $PERSONAL -w 150 -s $STYLE
+  patternlab)
+    open https://patternlab.io/docs/overview-of-patterns/
     ;;
   *)
     if [[ -f $PERSONAL ]]; then
@@ -28,16 +28,20 @@ function hint() {
         
         To see the full output of information:
         hint -l           display full library of searchable terms
-        hint -p           only search personal notes
-        hint -d           only search devhints.io
+        hint patternlab   Patternlab documentation 
+        hint superscript  Superscript generator
 
-        Other commands to search (will be added soon)
+        Other commands to search
         tldr              info on man pages
         cht.sh            search lots of different cheatsheets on the internet 
+        google            google search form the command line
         "
         #exit 1 # Command to come out of the program with status 1 || "$?" -eq 0
       fi
     fi
     ;;
   esac
+
 }
+
+
