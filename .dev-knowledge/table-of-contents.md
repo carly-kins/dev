@@ -1,7 +1,5 @@
 # Table of Contents
 
-For more info check out [Free Code Camp](https://www.freecodecamp.org/news/git-cheat-sheet/) and [Github](https://education.github.com/git-cheat-sheet-education.pdf)
-
 **Carly's Docs**
 _Configuring user information used across all local repositories_
 
