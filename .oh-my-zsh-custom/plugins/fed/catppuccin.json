@@ -96,8 +96,7 @@
           "color": "#a6e3a1"
         },
         "error": {
-          "color": "#f38ba8",
-          "background_color": "#f2cdcd"
+          "color": "#f38ba8"
         },
         "comment": {
           "color": "#6c7086"

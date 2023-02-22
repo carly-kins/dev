@@ -33,6 +33,29 @@ How this works:
 | _Class prefix_        	| .col-          	| .col-sm-  	| .col-md-   	| .col-lg-  	| .col-xl-       	|
 | _Max container Width_ 	| None (auto)    	| 540px     	| 720px      	| 960px     	| 1140px         	|
 
+
+## Custom gutter example 
+
+- _Row Gutter_: ``-1/2`` of what you want the gap to be (``margin-left`` and ``margin right``)
+- _Col_: ``1/2 ``positive left and right ``padding``
+
+    ```SCSS
+    $tab-spacing: 100px;
+
+    &__container {
+        // Gutter should match the tab spacing 
+        &.row (
+            margin-right: -$tab-spacing / 2;
+            margin-left: -$tab-spacing / 2;
+
+            > [class*='col-'] { // target just the immediate descendent
+                padding-right: $tab-spacing / 2;
+                padding-left: $tab-spacing / 2;
+            }
+        )
+    }
+    ```
+
 ## Other Notes 
 
 - Gutter width = 30px (15px on each side of a column)
