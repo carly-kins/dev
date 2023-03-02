@@ -4,8 +4,10 @@
 _Configuring user information used across all local repositories_
 
 ``bootstrap-grid`` Explaination of bootstrap's grid
+``dot`` Dot File notes
 ``flex`` Flexbox
 ``git`` Common git shortcuts
+``pl-data`` Patternlab data flow
 ___
 
 **Devhints.io**
