@@ -45,6 +45,7 @@ function hint() {
 }
 
 function fed() {
+  INPUT="$1"
   case ${INPUT} in
   svg)
     open https://jakearchibald.github.io/svgomg/ 
