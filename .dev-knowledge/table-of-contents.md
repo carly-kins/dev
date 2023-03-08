@@ -7,7 +7,9 @@ _Configuring user information used across all local repositories_
 ``dot`` Dot File notes
 ``flex`` Flexbox
 ``git`` Common git shortcuts
+``notes`` general notes
 ``pl-data`` Patternlab data flow
+``shortcuts`` Shortcuts I always forget
 ___
 
 **Devhints.io**

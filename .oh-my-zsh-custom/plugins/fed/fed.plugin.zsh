@@ -44,4 +44,30 @@ function hint() {
 
 }
 
+function fed() {
+  case ${INPUT} in
+  svg)
+    open https://jakearchibald.github.io/svgomg/ 
+    ;;
+  shortcuts)
+    code $DEV/shortcuts.md
+    ;;
+  notes)
+    code $DEV/notes.md
+    ;;
+  *)
+    echo "
+    ERROR: Tool not found
+        
+    To see the full output of information:
+    svg               svgomg
+    shortcuts         edit shortcuts file
+    notes             edit notes file
+    "
+    ;;
+  esac
+
+}
+
+
 
