@@ -122,7 +122,8 @@ plugins=(
     z 
     zsh-syntax-highlighting 
     timeCalc 
-    fed 
+    fed
+    aem
     )
 
 source $ZSH/oh-my-zsh.sh
