@@ -17,6 +17,10 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
+#jenv
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+
 # Set name of the theme to load --- with theme customizations
 ZSH_THEME="spaceship"
 SPACESHIP_GIT_BRANCH_PREFIX="🌱 "
