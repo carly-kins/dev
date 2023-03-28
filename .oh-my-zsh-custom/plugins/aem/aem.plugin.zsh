@@ -1,11 +1,11 @@
 REPO="$HOME/Repositories"
 
 function aem() {
-  PROJECT="$1"
-  INPUT="$2"
+  INPUT="$1"
+  PROJECT="$2"
   case ${INPUT} in
   directory)
-    cd $REPO/{$PROJECT}-author/crx-quickstart #make sure we are in the project-author repo
+    cd $REPO/$PROJECT-author/crx-quickstart #make sure we are in the project-author repo
     ;;
   start)
     bin/start #start the server 
