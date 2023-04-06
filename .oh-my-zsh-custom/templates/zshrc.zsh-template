@@ -14,9 +14,8 @@ export PATH="$PYENV_ROOT/shims:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init --path)"
   eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
 fi
-
-eval "$(pyenv virtualenv-init -)"
 
 # Set name of the theme to load --- with theme customizations
 ZSH_THEME="spaceship"
@@ -169,3 +168,4 @@ export EDITOR="code"
 #jenv https://www.jenv.be/
 export PATH="$HOME/.jenv/bin:$PATH"
 eval "$(jenv init -)"
+
