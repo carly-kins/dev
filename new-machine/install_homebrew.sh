@@ -8,6 +8,7 @@ brew install wget
 brew install coreutils
 brew install iterm2
 brew install pyenv
+brew install pyenv-virtualenv
 brew install python
 brew tap homebrew/cask-fonts
 brew install --cask font-fira-code
