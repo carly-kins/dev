@@ -1,6 +1,7 @@
 STYLE="$HOME/.oh-my-zsh-custom/plugins/fed/catppuccin.json"
 DEV="$HOME/dev/.dev-knowledge"
 DEVHINTS="https://raw.githubusercontent.com/rstacruz/cheatsheets/master"
+REPO="$HOME/Repositories"
 
 function hint() {
   INPUT="$1"
@@ -55,6 +56,10 @@ function fed() {
     ;;
   notes)
     code $DEV/notes.md
+    ;;
+  repo)
+    cd $HOME
+    cd $HOME/Repositories
     ;;
   *)
     echo "
