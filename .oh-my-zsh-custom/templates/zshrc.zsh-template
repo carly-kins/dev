@@ -157,7 +157,7 @@ alias tc="timeCalc"
 # eval `gdircolors ~/.dircolors` 
 
 # environment variables
-export EDITOR="code"
+export EDITOR="code -w"
 
 #jenv https://www.jenv.be/ -- Check if jenv exists
 export PATH="$HOME/.jenv/bin:$PATH"

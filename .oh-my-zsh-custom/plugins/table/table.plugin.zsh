@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function em() {
   case "$1" in
     flip)
