@@ -1,28 +1,25 @@
+
 STYLE="$HOME/.oh-my-zsh-custom/plugins/fed/catppuccin.json"
 DEV="$HOME/dev/.dev-knowledge"
 DEVHINTS="https://raw.githubusercontent.com/rstacruz/cheatsheets/master"
 REPO="$HOME/Repositories"
 
+# TODO: combine functionality with Fed's setup here: https://github.com/fmenozzi/env/blob/master/tools/open
+
 function hint() {
   INPUT="$1"
-  PERSONAL=$(find $DEV -name "$INPUT.md") #personal notes
+  PERSONAL=$(find "$DEV" -name "$INPUT.md") #personal notes
   DEVHINTS_URL="${DEVHINTS}/${INPUT}.md"  #devhints
   case ${INPUT} in
   -l)
-    glow ${DEV}/table-of-contents.md -w 150 -s $STYLE
-    ;;
-  superscript)
-    open https://lingojam.com/SuperscriptGenerator #may make another plugin for "resources"
-    ;;
-  patternlab)
-    open https://patternlab.io/docs/overview-of-patterns/
+    glow "${DEV}"/table-of-contents.md -w 150 -s "$STYLE"
     ;;
   *)
-    if [[ -f $PERSONAL ]]; then
-      glow $PERSONAL -w 150 -s $STYLE
+    if [[ -f "$PERSONAL" ]]; then
+      glow "$PERSONAL" -w 150 -s "$STYLE"
     else
       if curl --output /dev/null --silent --head --fail "$DEVHINTS_URL"; then
-        glow $DEVHINTS_URL -w 150 -s $STYLE
+        glow "$DEVHINTS_URL" -w 150 -s "$STYLE"
       else
         echo "
         ERROR: Info not found in Libraries. 
@@ -48,18 +45,24 @@ function hint() {
 function fed() {
   INPUT="$1"
   case ${INPUT} in
+  code)
+    code "$(fd -t f | fzf --preview="cat {}")"
+    ;;
+  find)
+    fd -t f | fzf --preview="cat {}"
+    ;;
   svg)
-    open https://jakearchibald.github.io/svgomg/ 
+    open https://jakearchibald.github.io/svgomg/
     ;;
   shortcuts)
-    code $DEV/shortcuts.md
+    code "${DEV}"/shortcuts.md
     ;;
   notes)
-    code $DEV/notes.md
+    code "${DEV}"/notes.md
     ;;
   repo)
-    cd $HOME
-    cd $HOME/Repositories
+    cd || exit
+    cd "$REPO" || exit
     ;;
   *)
     echo "
@@ -74,6 +77,3 @@ function fed() {
   esac
 
 }
-
-
-

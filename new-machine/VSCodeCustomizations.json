@@ -1,19 +1,16 @@
 {
-"workbench.colorTheme": "Catppuccin Mocha",
-
- "catppuccin.accentColor": "pink",
-
- "catppuccin.colorOverrides": {
-     "mocha": {
-         "base": "#0d1117",
-         "mantle": "#21262d",
-         "crust": "#21262d"
-     }
- },
- 
- "catppuccin.customUIColors": {
-     "mocha": {
-         "statusBar.foreground": "accent"
-     }
- }
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "catppuccin.accentColor": "pink",
+    "catppuccin.colorOverrides": {
+        "mocha": {
+            "base": "#0d1117",
+            "mantle": "#21262d",
+            "crust": "#21262d"
+        }
+    },
+    "catppuccin.customUIColors": {
+        "mocha": {
+            "statusBar.foreground": "accent"
+        }
+    }
 }

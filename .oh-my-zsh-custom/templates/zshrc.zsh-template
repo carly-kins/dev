@@ -14,7 +14,6 @@ export PATH="$PYENV_ROOT/shims:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init --path)"
   eval "$(pyenv init -)"
-  
 fi
 
 # Set name of the theme to load --- with theme customizations
@@ -111,15 +110,10 @@ ZSH_HIGHLIGHT_STYLES[cursor]='fg=#cdd6f4'
 plugins=(
     bundler 
     git 
-    docker 
-    docker-compose 
-    python gradle 
     brew table 
     zsh-autosuggestions 
     web-search 
     jsontools 
-    npm 
-    nvm 
     z 
     zsh-syntax-highlighting 
     timeCalc 
@@ -165,8 +159,13 @@ alias tc="timeCalc"
 # environment variables
 export EDITOR="code"
 
-#jenv https://www.jenv.be/
+#jenv https://www.jenv.be/ -- Check if jenv exists
 export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
+if command jenv 1>/dev/null 2>&1; then
+  eval "$(jenv init -)"
+fi
 
-eval "$(pyenv virtualenv-init -)"
+#virtualenv -- Check if virtualenv exists
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv virtualenv-init -)"
+fi
