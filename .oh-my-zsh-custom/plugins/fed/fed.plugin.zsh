@@ -49,10 +49,11 @@ function fed() {
   
   To see the full output of information:
   o     list all items in current directory and open in VSCode
-  f     edit shortcuts file
-  n     edit notes file
+  f     list all items in current directory
+  r     open repo folder
   svg   svgomg
-  sc    edit shortcuts file"
+  sc    edit shortcuts file
+  n     edit notes file"
   ; }
 
   INPUT="$1"
