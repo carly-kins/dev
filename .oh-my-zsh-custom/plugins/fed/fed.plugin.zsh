@@ -63,7 +63,7 @@ function fed() {
     open "$(fd -t f | fzf --preview="${BAT}")" #Note: if this doesn't work for a file run "duti -s com.microsoft.VSCode [file type] all"
     ;;
   b)
-    bat "$(fd -t f | fzf --preview="${BAT}")"
+    bat --style="plain" "$(fd -t f | fzf --preview="${BAT}")"
     ;;
   svg)
     open https://jakearchibald.github.io/svgomg/
