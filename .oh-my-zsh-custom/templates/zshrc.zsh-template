@@ -122,6 +122,9 @@ plugins=(
     )
 
 source $ZSH/oh-my-zsh.sh
+source $(brew --prefix)/Cellar/fzf/0.41.1/shell/key-bindings.zsh
+source $(brew --prefix)/Cellar/fzf/0.41.1/shell/completion.zsh
+
 # Ruby on Mac https://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/#start-here-if-you-choose-the-long-and-manual-route
 source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
 source $(brew --prefix)/opt/chruby/share/chruby/auto.sh

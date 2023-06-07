@@ -49,7 +49,7 @@ function fed() {
   
   To see the full output of information:
   o     list all items in current directory and open in VSCode
-  f     list all items in current directory
+  b     list all items in current directory and output to bat
   r     open repo folder
   svg   svgomg
   sc    edit shortcuts file
@@ -57,12 +57,13 @@ function fed() {
   "; }
 
   INPUT="$1"
+  BAT="bat --color=always --line-range=:500 {}"
   case ${INPUT} in
   o)
-    open "$(fd -t f | fzf --preview="bat {}")" #Note: if this doesn't work for a file run "duti -s com.microsoft.VSCode [file type] all"
+    open "$(fd -t f | fzf --preview="${BAT}")" #Note: if this doesn't work for a file run "duti -s com.microsoft.VSCode [file type] all"
     ;;
-  f)
-    fd -t f | fzf --preview="bat {}"
+  b)
+    bat "$(fd -t f | fzf --preview="${BAT}")"
     ;;
   svg)
     open https://jakearchibald.github.io/svgomg/
