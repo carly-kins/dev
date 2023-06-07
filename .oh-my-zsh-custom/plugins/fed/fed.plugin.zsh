@@ -59,13 +59,7 @@ function fed() {
   INPUT="$1"
   case ${INPUT} in
   o)
-    open "$(fd -t f | fzf --preview="bat {}")"
-    if [ $? -eq 0 ]; then
-      echo "File is open"
-    else
-      echo "Build-in Mac open failed, opening with VSCode.."
-      code "$(fd -t f | fzf --preview="bat {}")"
-    fi
+    open "$(fd -t f | fzf --preview="bat {}")" #Note: if this doesn't work for a file run "duti -s com.microsoft.VSCode [file type] all"
     ;;
   f)
     fd -t f | fzf --preview="bat {}"

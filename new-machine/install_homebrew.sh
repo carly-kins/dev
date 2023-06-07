@@ -14,6 +14,7 @@ brew tap homebrew/cask-fonts
 brew install --cask font-fira-code
 brew install glow
 brew install fd 
+brew install fzf
 brew install bat
 brew install duti 
 
