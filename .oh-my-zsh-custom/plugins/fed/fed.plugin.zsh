@@ -53,13 +53,19 @@ function fed() {
   r     open repo folder
   svg   svgomg
   sc    edit shortcuts file
-  n     edit notes file"
-  ; }
+  n     edit notes file
+  "; }
 
   INPUT="$1"
   case ${INPUT} in
   o)
     open "$(fd -t f | fzf --preview="bat {}")"
+    if [ $? -eq 0 ]; then
+      echo "File is open"
+    else
+      echo "Build-in Mac open failed, opening with VSCode.."
+      code "$(fd -t f | fzf --preview="bat {}")"
+    fi
     ;;
   f)
     fd -t f | fzf --preview="bat {}"
