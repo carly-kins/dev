@@ -1,5 +1,46 @@
 {
     "workbench.colorTheme": "Catppuccin Mocha",
+    "redhat.telemetry.enabled": true,
+    "terminal.integrated.profiles.osx": {
+        "bash": {
+            "path": "bash",
+            "args": [
+                "-l"
+            ],
+            "icon": "terminal-bash"
+        },
+        "zsh": {
+            "path": "zsh",
+            "args": [
+                "-l"
+            ]
+        },
+        "fish": {
+            "path": "fish",
+            "args": [
+                "-l"
+            ]
+        },
+        "tmux": {
+            "path": "tmux",
+            "icon": "terminal-tmux"
+        },
+        "pwsh": {
+            "path": "pwsh",
+            "icon": "terminal-powershell"
+        },
+        "csh": {
+            "path": "/bin/csh"
+        }
+    },
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.fontFamily": "'Fira Code'",
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "editor.fontWeight": "400",
+    "editor.minimap.enabled": false,
+    "git.confirmSync": false,
+    "git.ignoreRebaseWarning": true,
     "catppuccin.accentColor": "pink",
     "catppuccin.colorOverrides": {
         "mocha": {
@@ -12,5 +53,70 @@
         "mocha": {
             "statusBar.foreground": "accent"
         }
-    }
+    },
+    "indentRainbow.colors": [
+        "rgba(245, 194, 231, 0.1)",
+        "rgba(249, 226, 175, 0.1)",
+        "rgba(166, 227, 161, 0.1)",
+        "rgba(116, 199, 236, 0.1)",
+        "rgba(180, 190, 254, 0.1)"
+    ],
+    "indentRainbow.errorColor": "rgba(243, 139, 168, 0.6)",
+    "indentRainbow.tabmixColor": "rgba(250, 179, 135, 0.6)",
+    "atlascode.jira.lastCreateSiteAndProject": {
+        "siteId": "cc98bf14-ee56-4937-b77c-3736fb579d0c",
+        "projectKey": "AAA"
+    },
+    "html.autoClosingTags": true,
+    "editor.linkedEditing": true,
+    "settingsSync.ignoredSettings": [],
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "explorer.confirmDelete": false,
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "python.defaultInterpreterPath": "/Users/cwooten/.pyenv/versions/3.11.0/bin/python",
+    "application.shellEnvironmentResolutionTimeout": 5,
+    "terminal.integrated.defaultProfile.linux": "",
+    "eslint.codeActionsOnSave.rules": null,
+    "eslint.format.enable": true,
+    "git-graph.graph.colours": [
+        "#74c7ec",
+        "#b4befe",
+        "#f5c2e7",
+        "#cba6f7",
+        "#f38ba8",
+        "#fab387",
+        "#f9e2af",
+        "#a6e3a1",
+        "#94e2d5",
+        "#89dceb",
+        "#89b4fa",
+        "#f2cdcd"
+    ],
+    "git.enableSmartCommit": true,
+    "stylelint.configFile": "/Users/cwooten/dev/stylelintrc.yaml",
+    "[scss]": {
+        "editor.defaultFormatter": "stylelint.vscode-stylelint",
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true,
+            "source.fixAll.stylelint": true
+        }
+    },
+    "stylelint.validate": [
+        "css",
+        "scss"
+    ],
+    "eslint.workingDirectories": [
+        "configs/.eslintrc"
+    ],
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "git.openRepositoryInParentFolders": "never"
 }
