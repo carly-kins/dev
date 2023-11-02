@@ -76,6 +76,13 @@ ___
 _Rewriting branches, updating commits and clearing history_
 
 ``git rebase [branch]``       | apply any commits of current branch ahead of specified one
+
+For Rebasing, rebase on the branch you want, and then run ``git push -f`` 
+_Warning!!!! You MUST..._
+- be on the _RIGHT BRANCH_
+- be the _ONLY_ one working on that branch
+_before force pushing!!!_
+
 ``git reset --hard [commit]`` | clear staging area, rewrite working tree from specified commit
 ``git commit --amend``        | modify and add changes to the most recent commit.*
 ``git revert HEAD``           | create a new commit that is the opposite of everything in the given commit. (ex. using the head alias).
