@@ -110,7 +110,8 @@ ZSH_HIGHLIGHT_STYLES[cursor]='fg=#cdd6f4'
 plugins=(
     bundler 
     git 
-    brew table 
+    brew 
+    table 
     zsh-autosuggestions 
     web-search 
     jsontools 
