@@ -113,14 +113,12 @@ plugins=(
     bundler 
     git 
     brew 
-    table 
     zsh-autosuggestions 
     web-search 
     jsontools 
     z 
     zsh-syntax-highlighting 
-    timeCalc 
-    fed
+    scripts
     aem
     )
 
