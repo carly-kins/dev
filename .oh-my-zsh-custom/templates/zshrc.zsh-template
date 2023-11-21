@@ -8,16 +8,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Apple Silicon and Node Sass
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/shims:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
-#virtualenv -- Check if virtualenv exists
-  eval "$(pyenv virtualenv-init -)"
-fi
-
 # Set name of the theme to load --- with theme customizations
 ZSH_THEME="spaceship"
 SPACESHIP_GIT_BRANCH_PREFIX="🌱 "
@@ -171,3 +161,12 @@ if command jenv 1>/dev/null 2>&1; then
   eval "$(jenv init -)"
 fi
 
+# Apple Silicon and Node Sass
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+#virtualenv -- Check if virtualenv exists
+  eval "$(pyenv virtualenv-init -)"
+fi
