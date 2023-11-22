@@ -213,14 +213,12 @@ if __name__ == '__main__':
     parser_list.add_argument('--csv', action='store_true', help='display in csv format')
     parser_list.set_defaults(func=list_entires)
 
-    # Passes and works with new functionality
     # TODO: Add Arg to add last git log message
     parser_add = subparsers.add_parser('add', help='add new entry')
     parser_add.add_argument('entry', help='entry for achievement or improvement')
     parser_add.add_argument('-n', '--notes', help='notes for entry')
     parser_add.set_defaults(func=add_entry)
 
-    # Passes and works with new functionality
     parser_rm = subparsers.add_parser('rm', help='remove entry')
     parser_rm.add_argument('id', type=int, help='entry id (taken from \'eval ls\')')
     parser_rm.set_defaults(func=remove_entry)
@@ -241,10 +239,10 @@ if __name__ == '__main__':
     # parser_load.add_argument('csv_file', help='csv file (entry,entr,tags)')
     # parser_load.set_defaults(func=load_entries)
 
-    parser_tags = subparsers.add_parser('types', help='list all tags alphabetically')
+    parser_tags = subparsers.add_parser('types', help='list all types')
     parser_tags.set_defaults(func=list_lookup("types_table"))
 
-    parser_tags = subparsers.add_parser('tags', help='list all tags alphabetically')
+    parser_tags = subparsers.add_parser('tags', help='list all tags')
     parser_tags.set_defaults(func=list_lookup("tags_table"))
 
     args = parser.parse_args()
