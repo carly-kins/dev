@@ -9,27 +9,12 @@ import pyutils
 import shutil
 import sys
 import questionary
-import json
 
 from datetime import datetime, timezone
-from html.parser import HTMLParser
-from urllib.request import urlopen, Request
 
+# Preset entry, title, and notes max column widths for common terminal width
 DB_PATH = './.oh-my-zsh-custom/databases/evaluation/evaluation.db'
 SCHEMA_PATH = './.oh-my-zsh-custom/databases/evaluation/evaluation_schema.sql'
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
-JSON_PATH = open('./.oh-my-zsh-custom/databases/tags.json')
-
-# Preset url, title, and notes max column widths for common terminal width
-# configurations, used when printing the formatted result table.
-# TODO: Add two types of tags to this results - improve/achievement, about tags
-
-# Fields:
-# notes 
-# Improvement/Achievement
-# Tags
-
-JSON = json.load(JSON_PATH)
 TYPE_PRESETS = "Is this an Achievement or an Improvement?"
 TAGS_PRESETS = "Chose the tags that best fit this achievement or improvement"
 
@@ -39,8 +24,6 @@ WIDTH_PRESETS = {
     205: (49, 49, 25),
     230: (51, 51, 25),
 }
-
-
 
 def create_or_open_db():
     with open(SCHEMA_PATH, 'r') as schema_file:
@@ -61,6 +44,7 @@ def entry_exists(id):
 def now_utc():
     return datetime.strftime(datetime.now(timezone.utc), '%Y-%m-%d %H:%M:%S')
 
+#TODO: Add notes column to table
 def print_result_table(rows):
     terminal_width = shutil.get_terminal_size().columns
     for terminal_preset_width in sorted(WIDTH_PRESETS.keys()):
@@ -76,22 +60,23 @@ def print_result_table(rows):
     fill_dashes_entry = '─' * (MAX_ENTRY_WIDTH + 2)
     fill_dashes_tags = '─' * (MAX_TAGS_WIDTH + 2)
     fill_dashes_type = '─' * (MAX_TYPE_WIDTH + 2)
-    print(f'┌──────┬' + fill_dashes_entry + '┬' + fill_dashes_type + '┬' + fill_dashes_tags + '┐')
+    print(f'┌──────┬' + fill_dashes_entry + '┬' + fill_dashes_tags + '┬' + fill_dashes_type + '┐')
     print(f'│  ID  │ {"Entry":^{MAX_ENTRY_WIDTH}} │ {"Tags":^{MAX_TAGS_WIDTH}} │ {"Type":^{MAX_TYPE_WIDTH}} │')
-    print(f'├──────┼' + fill_dashes_entry + '┼' + fill_dashes_type + '┼' + fill_dashes_tags + '┤')
+    print(f'├──────┼' + fill_dashes_entry + '┼' + fill_dashes_tags + '┼' + fill_dashes_type + '┤')
     for idx, row in enumerate(rows):
         id, entry, type, _, tags, _= row
         entry, tags, type = (cell(entry, MAX_ENTRY_WIDTH), cell(tags, MAX_TAGS_WIDTH), cell(type, MAX_TYPE_WIDTH))
         print(f'│ {id:^4} │ {entry:{MAX_ENTRY_WIDTH}} │ {tags:{MAX_TAGS_WIDTH}} │ {type:{MAX_TYPE_WIDTH}} │')
         if idx == len(rows) - 1:
-            print(f'└──────┴' + fill_dashes_entry + '┴' + fill_dashes_type + '┴' + fill_dashes_tags + '┘')
+            print(f'└──────┴' + fill_dashes_entry + '┴' + fill_dashes_tags + '┴' + fill_dashes_type + '┘')
         else:
-            print(f'├──────┼' + fill_dashes_entry + '┼' + fill_dashes_type + '┼' + fill_dashes_tags + '┤')
+            print(f'├──────┼' + fill_dashes_entry + '┼' + fill_dashes_tags + '┼' + fill_dashes_type + '┤')
 
 def stringify_row(row):
-    id, entry, type, notes, tags, date_added= row
+    id, entry, type, notes, tags, date_added = row
     return f'{id} {entry} {type} {notes} {tags} {date_added}'
 
+# TODO: Add option to specify date when listing entries options results ----- res = cur.execute('SELECT entry FROM evalEntries ORDER BY date_added ASC;')
 def list_entires(args):
     con, cur = create_or_open_db()
     res = cur.execute('SELECT * FROM evalEntries;')
@@ -106,12 +91,25 @@ def list_entires(args):
     else:
         print_result_table(rows)
 
+def list_lookup(table):
+    con, cur = create_or_open_db()
+    res = cur.execute(f'SELECT * FROM {table};')
+    rows = res.fetchall()
+    con.close()
+    
+    array = []
+    for row in rows:
+        ( _, entry ) = row
+        array.append(entry)
+    return array
+
+# TODO: Add option to make entry last git commit message
 def add_entry(args):
     con, cur = create_or_open_db()
-    type = questionary.select(TYPE_PRESETS,choices=JSON["types"]).ask()
+    type = questionary.select(TYPE_PRESETS,choices=list_lookup("types_table")).ask()
     notes = args.notes if args.notes else ''
-    tags = str(questionary.checkbox(TAGS_PRESETS,choices=JSON["tags"]).ask())
-    query = '''
+    tags = str(questionary.checkbox(TAGS_PRESETS,choices=list_lookup("tags_table")).ask())
+    query = f'''
         INSERT INTO evalEntries (rowid, entry, type, notes, tags, date_added)
         VALUES (NULL, ?, ?, ?, ?, ?);
     '''
@@ -134,16 +132,18 @@ def update_entry(args):
         sys.exit(1)
     con, cur = create_or_open_db()
     if not args.entry and not args.notes and not args.tags:
+
         print('Must update at least one of entry, notes, tags')
         sys.exit(1)
     
-    # get old entry and print it"
+    # TODO: get old entry and print it before changing 
+    # TODO: Add option to change type
     if args.entry:
         cur.execute('UPDATE evalEntries SET entry = ? WHERE id = ?', (args.entry, args.id))
     if args.notes:
         cur.execute('UPDATE evalEntries SET notes = ? WHERE id = ?', (args.notes, args.id))
     if args.tags:
-        new_tags = str(questionary.checkbox(TAGS_PRESETS,choices=JSON["tags"]).ask())
+        new_tags = str(questionary.checkbox(TAGS_PRESETS,choices=list_lookup("tags_table")).ask())
         if '%t' in new_tags:
             # %t represents the existing tags and is used to make easier modifications.
             old_tags, = cur.execute('SELECT tags FROM evalEntries WHERE id = ?', (args.id,)).fetchone()
@@ -152,54 +152,32 @@ def update_entry(args):
     con.commit()
     con.close()
 
-# def find_entry(args):
-#     con, cur = create_or_open_db()
-#     if args.query:
-#         res = cur.execute('SELECT rowid, * FROM evalEntries_fts(?) ORDER BY rank;', (args.query,))
-#         rows = res.fetchall()
-#     else:
-#         res = cur.execute('SELECT * FROM evalEntries;')
-#         rows = res.fetchall()
-#         stringified_rows_to_rows = {stringify_row(row): row for row in rows}
-#         fzf_input = stringified_rows_to_rows.keys()
-#         fzf_selection = pyutils.fzf(fzf_input)
-#         if fzf_selection:
-#             rows = [stringified_rows_to_rows[fzf_selection]]
-#         else:
-#             rows = []
-#     con.close()
-#     if not rows:
-#         return
-#     if args.csv:
-#         for row in rows:
-#             id, entry, title, notes, tags, date_added = row
-#             print(f'"{id}","{entry}","{title}","{notes}","{tags}","{date_added}"')
-#     else:
-#         print_result_table(rows)
+def find_entry(args):
+    con, cur = create_or_open_db()
+    if args.query:
+        res = cur.execute('SELECT rowid, * FROM evalEntries_fts(?) ORDER BY rank;', (args.query,))
+        rows = res.fetchall()
+    else:
+        res = cur.execute('SELECT * FROM evalEntries;')
+        rows = res.fetchall()
+        stringified_rows_to_rows = {stringify_row(row): row for row in rows}
+        fzf_input = stringified_rows_to_rows.keys()
+        fzf_selection = pyutils.fzf(fzf_input)
+        if fzf_selection:
+            rows = [stringified_rows_to_rows[fzf_selection]]
+        else:
+            rows = []
+    con.close()
+    if not rows:
+        return
+    if args.csv:
+        for row in rows:
+            id, entry, title, notes, tags, date_added = row
+            print(f'"{id}","{entry}","{title}","{notes}","{tags}","{date_added}"')
+    else:
+        print_result_table(rows)
 
-# def open_entry(args):
-#     if 'id' in args and args.id:
-#         if not entry_exists(args.id):
-#             print(f'Link id {args.id} not found')
-#             sys.exit(1)
-#         con, cur = create_or_open_db()
-#         res = cur.execute('SELECT entry FROM evalEntries WHERE id = ?', (args.id,))
-#         entry, = res.fetchone()
-#         con.close()
-#     else:
-#         con, cur = create_or_open_db()
-#         res = cur.execute('SELECT * FROM evalEntries;')
-#         rows = res.fetchall()
-#         con.close()
-#         stringified_rows_to_rows = {stringify_row(row): row for row in rows}
-#         fzf_input = stringified_rows_to_rows.keys()
-#         fzf_selection = pyutils.fzf(fzf_input)
-#         if fzf_selection:
-#             _, entry, _, _, _, _ = stringified_rows_to_rows[fzf_selection]
-#         else:
-#             return
-#     pyutils.sh(f'xdg-open {entry}')
-
+# TODO: Re-add the ability to upload
 # def load_entries(args):
 #     with open(args.csv_file, newline='') as csv_file:
 #         reader = csv.reader(csv_file, delimiter=',', quotechar='"')
@@ -224,46 +202,6 @@ def update_entry(args):
 #         )
 #         con.commit()
 #         con.close()
-
-# def list_urls(args):
-#     con, cur = create_or_open_db()
-#     res = cur.execute('SELECT entry FROM evalEntries ORDER BY date_added ASC;')
-#     rows = res.fetchall()
-#     con.close()
-#     for row in rows:
-#         entry, = row
-#         print(f'{entry}')
-
-# def list_tags(args):
-#     con, cur = create_or_open_db()
-#     res = cur.execute('SELECT id, entry, tags FROM evalEntries;')
-#     rows = res.fetchall()
-#     con.close()
-#     if args.histogram:
-#         tags = {}
-#         for row in rows:
-#             _, _, comma_separated_tags = row
-#             tags_list = comma_separated_tags.split(',')
-#             for tag in tags_list:
-#                 if tag not in tags:
-#                     tags[tag] = 1
-#                 else:
-#                     tags[tag] += 1
-#         tag_histogram = {tag: count for tag, count in sorted(tags.items(), key=lambda item: item[1], reverse=True)}
-#         for tag in tag_histogram:
-#             print(f'{tag}, {tag_histogram[tag]}')
-#     elif args.table:
-#         print('UNIMPLEMENTED')
-#     else:
-#         # Simply print all tags alphabetically.
-#         tags = set()
-#         for row in rows:
-#             id, entry, comma_separated_tags = row
-#             tags_list = comma_separated_tags.split(',')
-#             for tag in tags_list:
-#                 tags.add(tag)
-#         for tag in sorted(tags):
-#             print(f'{tag}')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -294,27 +232,20 @@ if __name__ == '__main__':
     parser_update.add_argument('-t', action='store_true', help='update tags')
     parser_update.set_defaults(func=update_entry)
 
-    # parser_find = subparsers.add_parser('find', help='find links')
-    # parser_find.add_argument('query', nargs='?', help='search query')
-    # parser_find.add_argument('--csv', action='store_true', help='display in csv format')
-    # parser_find.set_defaults(func=find_entry)
-
-    # parser_open = subparsers.add_parser('open', help='open links in browser')
-    # parser_open.add_argument('id', type=int, nargs='?', help='link id (taken from \'links ls\')')
-    # parser_open.set_defaults(func=open_entry)
+    parser_find = subparsers.add_parser('find', help='find links')
+    parser_find.add_argument('query', nargs='?', help='search query')
+    parser_find.add_argument('--csv', action='store_true', help='display in csv format')
+    parser_find.set_defaults(func=find_entry)
 
     # parser_load = subparsers.add_parser('load', help='load links from csv (entry,entr,tags)')
     # parser_load.add_argument('csv_file', help='csv file (entry,entr,tags)')
     # parser_load.set_defaults(func=load_entries)
 
-    # parser_entrys = subparsers.add_parser('entrys', help='list all entrys in insertion order')
-    # parser_urls.set_defaults(func=list_urls)
+    parser_tags = subparsers.add_parser('types', help='list all tags alphabetically')
+    parser_tags.set_defaults(func=list_lookup("types_table"))
 
-    # parser_tags = subparsers.add_parser('tags', help='list all tags alphabetically')
-    # parser_tags_group = parser_tags.add_mutually_exclusive_group()
-    # parser_tags_group.add_argument('--histogram', action='store_true', help='show tags and counts')
-    # parser_tags_group.add_argument('-t', '--table', action='store_true', help='show ids, urls, tags')
-    # parser_tags.set_defaults(func=list_tags)
+    parser_tags = subparsers.add_parser('tags', help='list all tags alphabetically')
+    parser_tags.set_defaults(func=list_lookup("tags_table"))
 
     args = parser.parse_args()
     args.func(args)
