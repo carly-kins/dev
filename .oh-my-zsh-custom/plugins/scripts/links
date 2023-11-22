@@ -8,23 +8,39 @@ import sqlite3
 import pyutils
 import shutil
 import sys
+import questionary
+import json
+
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from urllib.request import urlopen, Request
 
-DB_PATH = '/Users/cwooten/dev/.oh-my-zsh-custom/databases/evaluations/evaluation.db'
-SCHEMA_PATH = '/Users/cwooten/dev/.oh-my-zsh-custom/databases/evaluations/evaluation_schema.sql'
+DB_PATH = './.oh-my-zsh-custom/databases/evaluation/evaluation.db'
+SCHEMA_PATH = './.oh-my-zsh-custom/databases/evaluation/evaluation_schema.sql'
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+JSON_PATH = open('./.oh-my-zsh-custom/databases/tags.json')
 
-# Preset url, title, and description max column widths for common terminal width
+# Preset url, title, and notes max column widths for common terminal width
 # configurations, used when printing the formatted result table.
 # TODO: Add two types of tags to this results - improve/achievement, about tags
+
+# Fields:
+# notes 
+# Improvement/Achievement
+# Tags
+
+JSON = json.load(JSON_PATH)
+TYPE_PRESETS = "Is this an Achievement or an Improvement?"
+TAGS_PRESETS = "Chose the tags that best fit this achievement or improvement"
+
 WIDTH_PRESETS = {
-    114: (55, 21, 21),
-    160: (70, 36, 36),
-    205: (90, 49, 49),
-    230: (110, 51, 51),
+    114: (21, 21, 11),
+    160: (36, 36, 18),
+    205: (49, 49, 25),
+    230: (51, 51, 25),
 }
+
+
 
 def create_or_open_db():
     with open(SCHEMA_PATH, 'r') as schema_file:
@@ -35,9 +51,9 @@ def create_or_open_db():
     con.commit()
     return con, cur
 
-def link_exists(link_id):
+def entry_exists(id):
     con, cur = create_or_open_db()
-    res = cur.execute('SELECT COUNT(*) FROM evaluation WHERE id = ?', (link_id,))
+    res = cur.execute('SELECT COUNT(*) FROM evalEntries WHERE id = ?', (id,))
     count, = res.fetchone()
     con.close()
     return count == 1
@@ -45,289 +61,260 @@ def link_exists(link_id):
 def now_utc():
     return datetime.strftime(datetime.now(timezone.utc), '%Y-%m-%d %H:%M:%S')
 
-# TODO: Add two types of tags to this results - improve/achievement, about tags
 def print_result_table(rows):
     terminal_width = shutil.get_terminal_size().columns
     for terminal_preset_width in sorted(WIDTH_PRESETS.keys()):
         if terminal_width <= terminal_preset_width:
             preset = WIDTH_PRESETS[terminal_preset_width]
             break
-    MAX_URL_WIDTH, MAX_TITLE_WIDTH, MAX_DESC_WIDTH = preset
+    MAX_ENTRY_WIDTH, MAX_TAGS_WIDTH, MAX_TYPE_WIDTH = preset
     def cell(cell_text, max_width):
         if len(cell_text) <= max_width:
             return cell_text
         else:
             return cell_text[:max_width-3] + '...'
-    fill_dashes_url = '─' * (MAX_URL_WIDTH + 2)
-    fill_dashes_title = '─' * (MAX_TITLE_WIDTH + 2)
-    fill_dashes_desc = '─' * (MAX_DESC_WIDTH + 2)
-    print(f'┌──────┬' + fill_dashes_url + '┬' + fill_dashes_title + '┬' + fill_dashes_desc + '┐')
-
-    print(f'│  ID  │ {"URL":^{MAX_URL_WIDTH}} │ {"Title":^{MAX_TITLE_WIDTH}} │ {"Description":^{MAX_DESC_WIDTH}} │')
-
-    print(f'├──────┼' + fill_dashes_url + '┼' + fill_dashes_title + '┼' + fill_dashes_desc + '┤')
-
+    fill_dashes_entry = '─' * (MAX_ENTRY_WIDTH + 2)
+    fill_dashes_tags = '─' * (MAX_TAGS_WIDTH + 2)
+    fill_dashes_type = '─' * (MAX_TYPE_WIDTH + 2)
+    print(f'┌──────┬' + fill_dashes_entry + '┬' + fill_dashes_type + '┬' + fill_dashes_tags + '┐')
+    print(f'│  ID  │ {"Entry":^{MAX_ENTRY_WIDTH}} │ {"Tags":^{MAX_TAGS_WIDTH}} │ {"Type":^{MAX_TYPE_WIDTH}} │')
+    print(f'├──────┼' + fill_dashes_entry + '┼' + fill_dashes_type + '┼' + fill_dashes_tags + '┤')
     for idx, row in enumerate(rows):
-        id, url, title, desc, _, _= row
-
-        url, title, desc = (cell(url, MAX_URL_WIDTH), cell(title, MAX_TITLE_WIDTH), cell(desc, MAX_DESC_WIDTH))
-
-        print(f'│ {id:^4} │ {url:{MAX_URL_WIDTH}} │ {title:{MAX_TITLE_WIDTH}} │ {desc:{MAX_DESC_WIDTH}} │')
-
+        id, entry, type, _, tags, _= row
+        entry, tags, type = (cell(entry, MAX_ENTRY_WIDTH), cell(tags, MAX_TAGS_WIDTH), cell(type, MAX_TYPE_WIDTH))
+        print(f'│ {id:^4} │ {entry:{MAX_ENTRY_WIDTH}} │ {tags:{MAX_TAGS_WIDTH}} │ {type:{MAX_TYPE_WIDTH}} │')
         if idx == len(rows) - 1:
-
-            print(f'└──────┴' + fill_dashes_url + '┴' + fill_dashes_title + '┴' + fill_dashes_desc + '┘')
-            
+            print(f'└──────┴' + fill_dashes_entry + '┴' + fill_dashes_type + '┴' + fill_dashes_tags + '┘')
         else:
-            print(f'├──────┼' + fill_dashes_url + '┼' + fill_dashes_title + '┼' + fill_dashes_desc + '┤')
-
-def get_title_from_url(url):
-    request = Request(url, headers={'User-Agent': USER_AGENT})
-    try:
-        response = urlopen(request)
-        encoding = response.info().get_content_charset()
-        html = response.read().decode(encoding if encoding else 'utf-8')
-        class TitleParser(HTMLParser):
-            def __init__(self):
-                HTMLParser.__init__(self)
-                self.match = False
-                self.title = ''
-            def handle_starttag(self, tag, attributes):
-                self.match = tag == 'title'
-            def handle_data(self, data):
-                if self.match:
-                    self.title = data
-                    self.match = False
-        title_parser = TitleParser()
-        title_parser.feed(html)
-        return title_parser.title.strip()
-    except Exception:
-        return ''
+            print(f'├──────┼' + fill_dashes_entry + '┼' + fill_dashes_type + '┼' + fill_dashes_tags + '┤')
 
 def stringify_row(row):
-    id, url, title, description, tags, date_added = row
-    return f'{id} {url} {title} {description} {tags} {date_added}'
+    id, entry, type, notes, tags, date_added= row
+    return f'{id} {entry} {type} {notes} {tags} {date_added}'
 
-def list_links(args):
+def list_entires(args):
     con, cur = create_or_open_db()
-    res = cur.execute('SELECT * FROM evaluation;')
+    res = cur.execute('SELECT * FROM evalEntries;')
     rows = res.fetchall()
     con.close()
     if not rows:
         return
     if 'csv' in args and args.csv:
         for row in rows:
-            (id, url, title, description, tags, date_added) = row
-            print(f'"{id}","{url}","{title}","{description}","{tags}","{date_added}"')
+            (id, entry, type, notes, tags, date_added) = row
+            print(f'"{id}","{entry}","{type}","{notes}","{tags}","{date_added}"')
     else:
         print_result_table(rows)
 
-def add_link(args):
+def add_entry(args):
     con, cur = create_or_open_db()
-    title = get_title_from_url(args.url)
-    description = args.description if args.description else ''
-    tags = args.tags if args.tags else ''
+    type = questionary.select(TYPE_PRESETS,choices=JSON["types"]).ask()
+    notes = args.notes if args.notes else ''
+    tags = str(questionary.checkbox(TAGS_PRESETS,choices=JSON["tags"]).ask())
     query = '''
-        INSERT INTO evaluation (rowid, url, title, description, tags, date_added)
+        INSERT INTO evalEntries (rowid, entry, type, notes, tags, date_added)
         VALUES (NULL, ?, ?, ?, ?, ?);
     '''
-    cur.execute(query, (args.url, title, description, tags, now_utc()))
+    cur.execute(query, (args.entry, type, notes, tags, now_utc()))
     con.commit()
     con.close()
 
-# TODO: Allow for selecting one or more links to remove via fzf-based fuzzy
-#       finding interface, searching on url/title/description/tags
-def remove_link(args):
-    if not link_exists(args.id):
-        print(f'Link id {args.id} not found')
+def remove_entry(args):
+    if not entry_exists(args.id):
+        print(f'Entry id {args.id} not found')
         sys.exit(1)
     con, cur = create_or_open_db()
-    cur.execute('DELETE FROM evaluation WHERE id = ?', (args.id,))
+    cur.execute('DELETE FROM evalEntries WHERE id = ?', (args.id,))
     con.commit()
     con.close()
 
-def update_link(args):
-    if not link_exists(args.id):
-        print(f'Link id {args.id} not found')
+def update_entry(args):
+    if not entry_exists(args.id):
+        print(f'Entry id {args.id} not found')
         sys.exit(1)
     con, cur = create_or_open_db()
-    if not args.url and not args.description and not args.tags:
-        print('Must update at least one of url, description, tags')
+    if not args.entry and not args.notes and not args.tags:
+        print('Must update at least one of entry, notes, tags')
         sys.exit(1)
-    if args.url:
-        cur.execute('UPDATE evaluation SET url = ? WHERE id = ?', (args.url, args.id))
-    if args.description:
-        cur.execute('UPDATE evaluation SET description = ? WHERE id = ?', (args.description, args.id))
+    
+    # get old entry and print it"
+    if args.entry:
+        cur.execute('UPDATE evalEntries SET entry = ? WHERE id = ?', (args.entry, args.id))
+    if args.notes:
+        cur.execute('UPDATE evalEntries SET notes = ? WHERE id = ?', (args.notes, args.id))
     if args.tags:
-        new_tags = args.tags
-        if '%t' in args.tags:
+        new_tags = str(questionary.checkbox(TAGS_PRESETS,choices=JSON["tags"]).ask())
+        if '%t' in new_tags:
             # %t represents the existing tags and is used to make easier modifications.
-            old_tags, = cur.execute('SELECT tags FROM evaluation WHERE id = ?', (args.id,)).fetchone()
-            new_tags = args.tags.replace('%t', old_tags)
-        cur.execute('UPDATE evaluation SET tags = ? WHERE id = ?', (new_tags, args.id))
+            old_tags, = cur.execute('SELECT tags FROM evalEntries WHERE id = ?', (args.id,)).fetchone()
+            new_tags = new_tags.replace('%t', old_tags)
+        cur.execute('UPDATE evalEntries SET tags = ? WHERE id = ?', (new_tags, args.id))
     con.commit()
     con.close()
 
-def find_link(args):
-    con, cur = create_or_open_db()
-    if args.query:
-        res = cur.execute('SELECT rowid, * FROM evaluation_fts(?) ORDER BY rank;', (args.query,))
-        rows = res.fetchall()
-    else:
-        res = cur.execute('SELECT * FROM evaluation;')
-        rows = res.fetchall()
-        stringified_rows_to_rows = {stringify_row(row): row for row in rows}
-        fzf_input = stringified_rows_to_rows.keys()
-        fzf_selection = pyutils.fzf(fzf_input)
-        if fzf_selection:
-            rows = [stringified_rows_to_rows[fzf_selection]]
-        else:
-            rows = []
-    con.close()
-    if not rows:
-        return
-    if args.csv:
-        for row in rows:
-            id, url, title, description, tags, date_added = row
-            print(f'"{id}","{url}","{title}","{description}","{tags}","{date_added}"')
-    else:
-        print_result_table(rows)
+# def find_entry(args):
+#     con, cur = create_or_open_db()
+#     if args.query:
+#         res = cur.execute('SELECT rowid, * FROM evalEntries_fts(?) ORDER BY rank;', (args.query,))
+#         rows = res.fetchall()
+#     else:
+#         res = cur.execute('SELECT * FROM evalEntries;')
+#         rows = res.fetchall()
+#         stringified_rows_to_rows = {stringify_row(row): row for row in rows}
+#         fzf_input = stringified_rows_to_rows.keys()
+#         fzf_selection = pyutils.fzf(fzf_input)
+#         if fzf_selection:
+#             rows = [stringified_rows_to_rows[fzf_selection]]
+#         else:
+#             rows = []
+#     con.close()
+#     if not rows:
+#         return
+#     if args.csv:
+#         for row in rows:
+#             id, entry, title, notes, tags, date_added = row
+#             print(f'"{id}","{entry}","{title}","{notes}","{tags}","{date_added}"')
+#     else:
+#         print_result_table(rows)
 
-def open_link(args):
-    if 'id' in args and args.id:
-        if not link_exists(args.id):
-            print(f'Link id {args.id} not found')
-            sys.exit(1)
-        con, cur = create_or_open_db()
-        res = cur.execute('SELECT url FROM evaluation WHERE id = ?', (args.id,))
-        url, = res.fetchone()
-        con.close()
-    else:
-        con, cur = create_or_open_db()
-        res = cur.execute('SELECT * FROM evaluation;')
-        rows = res.fetchall()
-        con.close()
-        stringified_rows_to_rows = {stringify_row(row): row for row in rows}
-        fzf_input = stringified_rows_to_rows.keys()
-        fzf_selection = pyutils.fzf(fzf_input)
-        if fzf_selection:
-            _, url, _, _, _, _ = stringified_rows_to_rows[fzf_selection]
-        else:
-            return
-    pyutils.sh(f'xdg-open {url}')
+# def open_entry(args):
+#     if 'id' in args and args.id:
+#         if not entry_exists(args.id):
+#             print(f'Link id {args.id} not found')
+#             sys.exit(1)
+#         con, cur = create_or_open_db()
+#         res = cur.execute('SELECT entry FROM evalEntries WHERE id = ?', (args.id,))
+#         entry, = res.fetchone()
+#         con.close()
+#     else:
+#         con, cur = create_or_open_db()
+#         res = cur.execute('SELECT * FROM evalEntries;')
+#         rows = res.fetchall()
+#         con.close()
+#         stringified_rows_to_rows = {stringify_row(row): row for row in rows}
+#         fzf_input = stringified_rows_to_rows.keys()
+#         fzf_selection = pyutils.fzf(fzf_input)
+#         if fzf_selection:
+#             _, entry, _, _, _, _ = stringified_rows_to_rows[fzf_selection]
+#         else:
+#             return
+#     pyutils.sh(f'xdg-open {entry}')
 
-def load_links(args):
-    with open(args.csv_file, newline='') as csv_file:
-        reader = csv.reader(csv_file, delimiter=',', quotechar='"')
-        data = []
-        for row in reader:
-            if not row:
-                continue
-            url, description, tags = row
-            print(f'Loading {url}...')
-            title = get_title_from_url(url)
-            data.append({
-                "url": url,
-                "title": title,
-                "description": description,
-                "tags": tags,
-                "date_added": now_utc(),
-            })
-        con, cur = create_or_open_db()
-        cur.executemany(
-            'INSERT INTO evaluation VALUES(NULL, :url, :title, :description, :tags, :date_added);',
-            data
-        )
-        con.commit()
-        con.close()
+# def load_entries(args):
+#     with open(args.csv_file, newline='') as csv_file:
+#         reader = csv.reader(csv_file, delimiter=',', quotechar='"')
+#         data = []
+#         for row in reader:
+#             if not row:
+#                 continue
+#             entry, notes, tags = row
+#             print(f'Loading {entry}...')
+#             title = get_title_from_url(url)
+#             data.append({
+#                 "entry": entry,
+#                 "title": title,
+#                 "notes": notes,
+#                 "tags": tags,
+#                 "date_added": now_utc(),
+#             })
+#         con, cur = create_or_open_db()
+#         cur.executemany(
+#             'INSERT INTO evalEntries VALUES(NULL, :entry, :title, :notes, :tags, :date_added);',
+#             data
+#         )
+#         con.commit()
+#         con.close()
 
-def list_urls(args):
-    con, cur = create_or_open_db()
-    res = cur.execute('SELECT url FROM evaluation ORDER BY date_added ASC;')
-    rows = res.fetchall()
-    con.close()
-    for row in rows:
-        url, = row
-        print(f'{url}')
+# def list_urls(args):
+#     con, cur = create_or_open_db()
+#     res = cur.execute('SELECT entry FROM evalEntries ORDER BY date_added ASC;')
+#     rows = res.fetchall()
+#     con.close()
+#     for row in rows:
+#         entry, = row
+#         print(f'{entry}')
 
-def list_tags(args):
-    con, cur = create_or_open_db()
-    res = cur.execute('SELECT id, url, tags FROM evaluation;')
-    rows = res.fetchall()
-    con.close()
-    if args.histogram:
-        tags = {}
-        for row in rows:
-            _, _, comma_separated_tags = row
-            tags_list = comma_separated_tags.split(',')
-            for tag in tags_list:
-                if tag not in tags:
-                    tags[tag] = 1
-                else:
-                    tags[tag] += 1
-        tag_histogram = {tag: count for tag, count in sorted(tags.items(), key=lambda item: item[1], reverse=True)}
-        for tag in tag_histogram:
-            print(f'{tag}, {tag_histogram[tag]}')
-    elif args.table:
-        print('UNIMPLEMENTED')
-    else:
-        # Simply print all tags alphabetically.
-        tags = set()
-        for row in rows:
-            id, url, comma_separated_tags = row
-            tags_list = comma_separated_tags.split(',')
-            for tag in tags_list:
-                tags.add(tag)
-        for tag in sorted(tags):
-            print(f'{tag}')
+# def list_tags(args):
+#     con, cur = create_or_open_db()
+#     res = cur.execute('SELECT id, entry, tags FROM evalEntries;')
+#     rows = res.fetchall()
+#     con.close()
+#     if args.histogram:
+#         tags = {}
+#         for row in rows:
+#             _, _, comma_separated_tags = row
+#             tags_list = comma_separated_tags.split(',')
+#             for tag in tags_list:
+#                 if tag not in tags:
+#                     tags[tag] = 1
+#                 else:
+#                     tags[tag] += 1
+#         tag_histogram = {tag: count for tag, count in sorted(tags.items(), key=lambda item: item[1], reverse=True)}
+#         for tag in tag_histogram:
+#             print(f'{tag}, {tag_histogram[tag]}')
+#     elif args.table:
+#         print('UNIMPLEMENTED')
+#     else:
+#         # Simply print all tags alphabetically.
+#         tags = set()
+#         for row in rows:
+#             id, entry, comma_separated_tags = row
+#             tags_list = comma_separated_tags.split(',')
+#             for tag in tags_list:
+#                 tags.add(tag)
+#         for tag in sorted(tags):
+#             print(f'{tag}')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
-    parser.set_defaults(func=list_links)
+    parser.set_defaults(func=list_entires)
 
-    parser_list = subparsers.add_parser('ls', help='list links')
+    # Passes and works with new functionality 
+    parser_list = subparsers.add_parser('ls', help='list all entries')
     parser_list.add_argument('--csv', action='store_true', help='display in csv format')
-    parser_list.set_defaults(func=list_links)
+    parser_list.set_defaults(func=list_entires)
 
-    parser_add = subparsers.add_parser('add', help='add new link')
-    parser_add.add_argument('url', help='link url')
-    parser_add.add_argument('-d', '--description', help='description for link')
-    parser_add.add_argument('-t', '--tags', help='comma-separated list of tags')
-    parser_add.set_defaults(func=add_link)
+    # Passes and works with new functionality
+    # TODO: Add Arg to add last git log message
+    parser_add = subparsers.add_parser('add', help='add new entry')
+    parser_add.add_argument('entry', help='entry for achievement or improvement')
+    parser_add.add_argument('-n', '--notes', help='notes for entry')
+    parser_add.set_defaults(func=add_entry)
 
-    parser_rm = subparsers.add_parser('rm', help='remove link')
-    parser_rm.add_argument('id', type=int, help='link id (taken from \'links ls\')')
-    parser_rm.set_defaults(func=remove_link)
+    # Passes and works with new functionality
+    parser_rm = subparsers.add_parser('rm', help='remove entry')
+    parser_rm.add_argument('id', type=int, help='entry id (taken from \'eval ls\')')
+    parser_rm.set_defaults(func=remove_entry)
 
     parser_update = subparsers.add_parser('update', help='update link')
-    parser_update.add_argument('id', type=int, help='link id (taken from \'links ls\')')
-    parser_update.add_argument('-u', '--url', help='new url')
-    parser_update.add_argument('-d', '--description', help='new description')
-    parser_update.add_argument('-t', '--tags', help='new tags')
-    parser_update.set_defaults(func=update_link)
+    parser_update.add_argument('id', type=int, help='link id (taken from \'eval ls\')')
+    parser_update.add_argument('-e', '--entry', help='update entry')
+    parser_update.add_argument('-d', '--notes', help='update notes')
+    parser_update.add_argument('-t', action='store_true', help='update tags')
+    parser_update.set_defaults(func=update_entry)
 
-    parser_find = subparsers.add_parser('find', help='find links')
-    parser_find.add_argument('query', nargs='?', help='search query')
-    parser_find.add_argument('--csv', action='store_true', help='display in csv format')
-    parser_find.set_defaults(func=find_link)
+    # parser_find = subparsers.add_parser('find', help='find links')
+    # parser_find.add_argument('query', nargs='?', help='search query')
+    # parser_find.add_argument('--csv', action='store_true', help='display in csv format')
+    # parser_find.set_defaults(func=find_entry)
 
-    parser_open = subparsers.add_parser('open', help='open links in browser')
-    parser_open.add_argument('id', type=int, nargs='?', help='link id (taken from \'links ls\')')
-    parser_open.set_defaults(func=open_link)
+    # parser_open = subparsers.add_parser('open', help='open links in browser')
+    # parser_open.add_argument('id', type=int, nargs='?', help='link id (taken from \'links ls\')')
+    # parser_open.set_defaults(func=open_entry)
 
-    parser_load = subparsers.add_parser('load', help='load links from csv (url,desc,tags)')
-    parser_load.add_argument('csv_file', help='csv file (url,desc,tags)')
-    parser_load.set_defaults(func=load_links)
+    # parser_load = subparsers.add_parser('load', help='load links from csv (entry,entr,tags)')
+    # parser_load.add_argument('csv_file', help='csv file (entry,entr,tags)')
+    # parser_load.set_defaults(func=load_entries)
 
-    parser_urls = subparsers.add_parser('urls', help='list all urls in insertion order')
-    parser_urls.set_defaults(func=list_urls)
+    # parser_entrys = subparsers.add_parser('entrys', help='list all entrys in insertion order')
+    # parser_urls.set_defaults(func=list_urls)
 
-    parser_tags = subparsers.add_parser('tags', help='list all tags alphabetically')
-    parser_tags_group = parser_tags.add_mutually_exclusive_group()
-    parser_tags_group.add_argument('--histogram', action='store_true', help='show tags and counts')
-    parser_tags_group.add_argument('-t', '--table', action='store_true', help='show ids, urls, tags')
-    parser_tags.set_defaults(func=list_tags)
+    # parser_tags = subparsers.add_parser('tags', help='list all tags alphabetically')
+    # parser_tags_group = parser_tags.add_mutually_exclusive_group()
+    # parser_tags_group.add_argument('--histogram', action='store_true', help='show tags and counts')
+    # parser_tags_group.add_argument('-t', '--table', action='store_true', help='show ids, urls, tags')
+    # parser_tags.set_defaults(func=list_tags)
 
     args = parser.parse_args()
     args.func(args)
