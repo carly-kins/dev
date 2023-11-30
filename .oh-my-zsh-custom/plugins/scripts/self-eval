@@ -20,7 +20,9 @@ SCHEMA_PATH = f'{HOME}/dev/.oh-my-zsh-custom/databases/evaluation/evaluation_sch
 TYPES_PRESETS = 'Achievement / Improvement:'
 TAGS_PRESETS = 'Self-Eval Tags:'
 ENTRY_PRESETS= 'Entry:'
+ENTRY_Q = questionary.text(ENTRY_PRESETS)
 NOTES_PRESETS= 'Notes:'
+NOTES_Q = questionary.text(NOTES_PRESETS)
 
 WIDTH_PRESETS = {
     114: (21, 21, 11),
@@ -76,6 +78,11 @@ def print_result_table(rows):
         else:
             print(f'├──────┼' + fill_dashes_entry + '┼' + fill_dashes_tags + '┼' + fill_dashes_types + '┤')
 
+def csv_output(rows):
+    for row in rows:
+        (id, entry, types, notes, tags, date_added) = row
+        print(f'"{id}","{entry}","{types}","{notes}","{tags}","{date_added}"')
+
 def stringify_row(row):
     id, entry, types, notes, tags, date_added = row
     return f'{id} {entry} {types} {notes} {tags} {date_added}'
@@ -89,9 +96,7 @@ def list_entires(args):
     if not rows:
         return
     if 'csv' in args and args.csv:
-        for row in rows:
-            (id, entry, types, notes, tags, date_added) = row
-            print(f'"{id}","{entry}","{types}","{notes}","{tags}","{date_added}"')
+        csv_output(rows)
     else:
         print_result_table(rows)
 
@@ -107,16 +112,21 @@ def list_lookup(table):
         array.append(entry)
     return array
 
+TYPES_Q = questionary.select(TYPES_PRESETS,choices=list_lookup('types_table'))
+TAGS_Q = questionary.checkbox(TAGS_PRESETS,choices=list_lookup('tags_table'))
+
 def add_entry(args):
     con, cur = create_or_open_db()
-    types = questionary.select(TYPES_PRESETS,choices=list_lookup('types_table')).ask()
-    tags = str(questionary.checkbox(TAGS_PRESETS,choices=list_lookup('tags_table')).ask())
+    types = ''
+    tags = ''
     query = f'''
         INSERT INTO evalEntries (rowid, entry, types, notes, tags, date_added)
         VALUES (NULL, ?, ?, ?, ?, ?);
     '''
     if args.git: 
-        notes = questionary.text(NOTES_PRESETS).ask() if args.notes else ''
+        types = TYPES_Q.ask()
+        tags = str(TAGS_Q.ask())
+        notes = NOTES_Q.ask() if args.notes else ''
         try:
             git = subprocess.run(['git', 'log', '-1', '--pretty=%B'], capture_output=True, text=True, check=True)
             git_string = git.stdout.strip()
@@ -126,8 +136,10 @@ def add_entry(args):
             return None
         cur.execute(query, (git_string, types, notes, tags, now_utc()))
     else: 
-        entry = questionary.text(ENTRY_PRESETS).ask()
-        notes = questionary.text(NOTES_PRESETS).ask() if args.notes else ''
+        types = TYPES_Q.ask()
+        entry = ENTRY_Q.ask()
+        tags = str(TAGS_Q.ask())
+        notes = NOTES_Q.ask() if args.notes else ''
         cur.execute(query, (entry, types, notes, tags, now_utc()))
     con.commit()
     con.close()
@@ -163,13 +175,13 @@ def update_entry(args):
         print('Must update at least one of entry, notes, tags')
         sys.exit(1)
     if args.entry:
-        update(cur, 'entry', 'evalEntries', args.id, questionary.text(ENTRY_PRESETS).ask(), False)
+        update(cur, 'entry', 'evalEntries', args.id, ENTRY_Q.ask(), False)
     if args.notes:
-        update(cur, 'notes', 'evalEntries', args.id, questionary.text(NOTES_PRESETS).ask(), False)
+        update(cur, 'notes', 'evalEntries', args.id, NOTES_Q.ask(), False)
     if args.tags:
-        update(cur, 'tags', 'evalEntries', args.id, str(questionary.checkbox(TAGS_PRESETS,choices=list_lookup('tags_table')).ask()), True)
+        update(cur, 'tags', 'evalEntries', args.id, str(TAGS_Q.ask()), True)
     if args.types:
-        update(cur, 'tags', 'evalEntries', args.id, questionary.select(TYPES_PRESETS,choices=list_lookup('types_table')).ask(), True)
+        update(cur, 'types', 'evalEntries', args.id, TYPES_Q.ask(), False)
     con.commit()
     con.close()
 
@@ -192,9 +204,7 @@ def find_entry(args):
     if not rows:
         return
     if args.csv:
-        for row in rows:
-            id, entry, title, notes, tags, date_added = row
-            print(f'"{id}","{entry}","{title}","{notes}","{tags}","{date_added}"')
+        csv_output(rows)
     else:
         print_result_table(rows)
 
