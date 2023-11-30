@@ -22,6 +22,6 @@ function emoji() {
   "$SCRIPTS"/emoji $INPUT
 }
 
-function links() {
-  "$SCRIPTS"/links $1 $2 $3 $4
+function self-eval() {
+  "$SCRIPTS"/self-eval $1 $2 $3 $4 $5 
 }
