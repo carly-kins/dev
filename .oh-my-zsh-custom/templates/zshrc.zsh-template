@@ -107,7 +107,7 @@ plugins=(
     web-search 
     jsontools 
     z 
-    zsh-syntax-highlighting 
+    zsh-syntax-highlighting
     scripts
     aem
     )
@@ -137,6 +137,7 @@ alias ls="ls -lah --color"
 alias c="code"
 alias p="python3"
 alias o="open"
+alias r="cd '$HOME/Repositories'"
 alias dkr="docker"
 alias dm="docker-machine"
 alias compose="docker-compose"

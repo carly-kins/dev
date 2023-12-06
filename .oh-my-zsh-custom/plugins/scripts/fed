@@ -11,11 +11,9 @@ usage() { printf "
     To see the full output of information:
     o     list all items in current directory and open in VSCode
     b     list all items in current directory and output to bat
-    r     open repo folder
     svg   svgomg
     sc    edit shortcuts file
-    n     edit notes file
-    "; }
+    n     edit notes file"; }
 
 INPUT="$1"
 BAT="bat --color=always --line-range=:500 {}"
@@ -34,10 +32,6 @@ sc)
     ;;
 n)
     code "${DEV}"/notes.md
-    ;;
-r)
-    cd || exit
-    cd "$REPO" || exit
     ;;
 *)
     usage
