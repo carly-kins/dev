@@ -29,3 +29,7 @@ Codespaces will automatically pull the zsh dotfiles from the root of this reposi
 # Other notes 
 Slack theme: (Based off Catpuccin - #21262D,#F8F8FA,#A6E3A1,#1E1E2E,#11111B,#CDD6F4,#A6E3A1,#DB889F,#0D1117,#CDD6F4)
 
+TODO: 
+- Configure for whether on MacOS or Linux with homebrew
+- clean up dotfiles - check for which machine we are on 
+
