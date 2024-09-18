@@ -16,10 +16,14 @@ usage() { printf "
     n     edit notes file"; }
 
 INPUT="$1"
+FILE="$2"
 BAT="bat --color=always --line-range=:500 {}"
 case ${INPUT} in
 o)
     open "$(fd -t f | fzf --preview="${BAT}")" #Note: if this doesn't work for a file run "duti -s com.microsoft.VSCode [file type] all"
+    ;;
+cf)
+    fd . "${FILE}" -t f | fzf --preview="${BAT}" | pbcopy 
     ;;
 b)
     bat --style="plain" "$(fd -t f | fzf --preview="${BAT}")"

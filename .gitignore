@@ -1,7 +1,10 @@
 .DS_Store
 .oh-my-zsh-custom/themes/
-.oh-my-zsh-custom/plugins
+.oh-my-zsh-custom/plugins/
 .dev-knowledge/cheatsheets
+.dev-knowledge/aem-install.md
+scripts/trans
 stylelintrc.yaml
 databases
 plugins
+

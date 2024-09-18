@@ -105,7 +105,14 @@ _Temporarily store modified, tracked files in order to change branches_
 ``git stash drop``  | discard the changes from top of stash stack
 ___
 
-## How to maek a new SSH key
+**FORGET** 
+_Make Git forget about a file that was tracked, but is now in .gitignore_
+
+``git rm --cached <file>``       | to stop tracking a file, we must remove it from the index
+``git rm -r --cached <folder>``  | To remove a folder and all files in the folder recursively
+___
+
+## How to make a new SSH key
 
 1. Paste the text below, substituting in your account email address. Note: This uses the provided email as a label.
 ```
