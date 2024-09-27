@@ -36,7 +36,7 @@ then
     create_symlinks
 else 
     echo "Not in Codespaces"
-    # sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     create_symlinks
     # ln -s $script_dir/new-machine/dotfiles/.bash_profile $HOME
     cd $script_dir/new-machine/

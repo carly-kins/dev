@@ -8,6 +8,9 @@ export DOTFILES_PATH="$ENV_PATH/.oh-my-zsh-custom/templates"
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+# zsh
+source <(fzf --zsh)
+
 # If you come from bash you might have to change your $PATH.
 export CUSTOM_SCRIPTS_PATH=~/dev
 export DOTNET_ROOT=$HOME/.dotnet
@@ -24,8 +27,6 @@ export NVM_DIR=~/.nvm
 # THEME AND PLUGINS
 source "$DOTFILES_PATH/theme.sh"
 
-source $ZSH/oh-my-zsh.sh
-
 # Which plugins would you like to load?
 plugins=(
     bundler 
@@ -37,6 +38,8 @@ plugins=(
     z 
     zsh-syntax-highlighting
     )
+
+source $ZSH/oh-my-zsh.sh
 
 # User configuration
 export LANG=en_US.UTF-8

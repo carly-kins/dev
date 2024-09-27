@@ -34,17 +34,6 @@ export NVM_DIR=~/.nvm
 # THEME AND PLUGINS
 source "$DOTFILES_PATH/theme.sh"
 
-source $ZSH/oh-my-zsh.sh
-
-if command -v brew 1>/dev/null 2>&1; then
-  source $(brew --prefix)/Cellar/fzf/0.41.1/shell/key-bindings.zsh
-  source $(brew --prefix)/Cellar/fzf/0.41.1/shell/completion.zsh
-# Ruby on Mac https://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/#start-here-if-you-choose-the-long-and-manual-route
-  source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
-  source $(brew --prefix)/opt/chruby/share/chruby/auto.sh
-  chruby ruby-3.1.3
-fi
-
 # Which plugins would you like to load?
 plugins=(
     bundler 
@@ -57,6 +46,17 @@ plugins=(
     zsh-syntax-highlighting
     aem
     )
+
+source $ZSH/oh-my-zsh.sh
+
+if command -v brew 1>/dev/null 2>&1; then
+  source $(brew --prefix)/Cellar/fzf/0.41.1/shell/key-bindings.zsh
+  source $(brew --prefix)/Cellar/fzf/0.41.1/shell/completion.zsh
+# Ruby on Mac https://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/#start-here-if-you-choose-the-long-and-manual-route
+  source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
+  source $(brew --prefix)/opt/chruby/share/chruby/auto.sh
+  chruby ruby-3.1.3
+fi
 
 # User configuration
 export LANG=en_US.UTF-8
