@@ -17,3 +17,4 @@ alias gitroot='cd $(git rev-parse --show-toplevel)'
 alias gitdeletelocal='git branch --merged | grep -v \* | xargs git branch -D'
 alias tc="timeCalc"
 alias cye2e="npm run e2e:chrome -- --spec"
+alias trans="./trans"

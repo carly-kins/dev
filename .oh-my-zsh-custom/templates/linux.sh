@@ -8,17 +8,23 @@ export DOTFILES_PATH="$ENV_PATH/.oh-my-zsh-custom/templates"
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-# zsh
-source <(fzf --zsh)
-
 # If you come from bash you might have to change your $PATH.
 export CUSTOM_SCRIPTS_PATH=~/dev
-export DOTNET_ROOT=$HOME/.dotnet
+export DOTNET_ROOT=$HOME/.dotnet/tools
+export RUST_ROOT=$HOME/.cargo/bin
+export LINUXBREW_ROOT=/home/linuxbrew/.linuxbrew/bin/brew
 
 export PATH=~/bin:/usr/local/bin:$PATH
-export PATH="/opt/homebrew/bin:$PATH"
+
+#export PATH=/opt/homebrew/bin:$PATH
+
 export PATH=$CUSTOM_SCRIPTS_PATH/scripts:$PATH
-export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
+export PATH=LINUXBREW_ROOT:$PATH
+export PATH=RUST_ROOT:$PATH
+export PATH=$DOTNET_ROOT:$DOTNET_ROOT:$PATH
+
+# zsh
+source <(fzf --zsh)
 
 export NVM_DIR=~/.nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
