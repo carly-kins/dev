@@ -56,7 +56,7 @@ plugins=(
     jsontools 
     z 
     zsh-syntax-highlighting
-    aem
+    aemc
     )
 
 source $ZSH/oh-my-zsh.sh

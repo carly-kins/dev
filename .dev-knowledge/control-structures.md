@@ -43,3 +43,75 @@ if true
 end #The keyword end ends the control structure.
 ```
 Like VB.NET, Ruby has a formal keyword reserved for ending control structures: `end`.
+
+# If, Else If, and Else
+
+## Python
+```
+if some_bool:
+    #Some code would go here!
+elif some_other_bool:
+    #Some other code would go here!
+else:
+    #Some other code would go here!
+```
+
+## Java, C, C++, C#, JavaScrip
+```
+if (some_bool) {
+    /* Some code would go here! */
+} else if (some_other_bool) {
+    /* Some other code would go here! */
+} else {
+    /* Some other code would go here! */
+}
+```
+You'll also find lots of arguments online about whether the closing bracket should go on the same line as the else if and the else. I prefer to keep the brackets on the same line; we can always add extra blank lines if we want to for readability. Note that in these languages, the condition itself must go inside parentheses.
+
+## VB.NET
+```
+If some_bool Then
+    'Some code would go here!
+ElseIf some_other_bool Then
+    'Some other code would go here!
+Else
+    'Some other code would go here!
+End If
+```
+VB.NET capitalizes its conditional keywords `(If, ElseIf, Else, and End If)`, and it also has an optional keyword `Then` that makes the code read a little more like natural language. It reads quite nicely if we use boolean names like today_is_monday. It also ends a conditional with the dedicated keyword `End If` instead of a close bracket.
+
+## Matlab
+```
+if some_bool
+    %Some code would go here!
+elseif some_other_bool
+    %Some other code would go here!
+else
+    %Some other code would go here!
+end
+```
+Like VB.NET, Matlab has a formal keyword reserved for ending control structures: `end`.
+
+## Swift
+```
+if some_bool {
+    /* Some code would go here! */
+} else if some_other_bool {
+    /* Some other code would go here! */
+} else {
+    /* Some other code would go here! */
+}
+```
+Swift is identical to Java and C except that it does not require parentheses around the conditional expression. `end`.
+
+## Ruby
+```
+if some_bool
+    #Some code would go here!
+elseif some_other_bool
+    #Some other code would go here!
+else
+    #Some other code would go here!
+end
+```
+Ruby is identical to Matlab, which is weird.
