@@ -31,5 +31,8 @@ Slack theme: (Based off Catpuccin - #21262D,#F8F8FA,#A6E3A1,#1E1E2E,#11111B,#CDD
 
 TODO: 
 - Configure for whether on MacOS or Linux with homebrew
-- clean up dotfiles - check for which machine we are on 
+- way to check for installing
+        - nvm 
 
+## WSL Notes: 
+https://medium.com/@vedantkadam541/beautify-your-windows-terminal-using-nerd-fonts-and-oh-my-posh-4f4393f097
