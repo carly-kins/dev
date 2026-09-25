@@ -17,3 +17,10 @@ alias gitroot='cd $(git rev-parse --show-toplevel)'
 alias gitdeletelocal='git branch --merged | grep -v \* | xargs git branch -D'
 alias tc="timeCalc"
 alias cye2e="npm run e2e:chrome -- --spec"
+
+# Layer in company-only Claude Code plugins/marketplaces (gitignored, machine-local
+# ~/dev/claude/settings.company.json) on top of the tracked ~/.claude/settings.json.
+# No-op if that file isn't present on this machine.
+if [ -f "$HOME/dev/claude/settings.company.json" ]; then
+  alias claude="claude --settings $HOME/dev/claude/settings.company.json"
+fi

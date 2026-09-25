@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<!--
+  PLAN DOC TEMPLATE (visual-first) — plain briefing on top, VISUAL structures for the body,
+  technical detail folded. Adopted 2026-09-14 after the combobox country-pages plan.
+  Theme: Catppuccin Mocha, shared with session-dashboard.html via theme.css — see the
+  BEGIN/END SHARED THEME markers below. Edit theme.css and run `python3 build.py`
+  (in templates/) to update both; never hand-edit inside the markers.
+
+  Rules when filling this in:
+  - The briefing (WHAT/WHY/WHAT CHANGES/HOW WE'LL KNOW) is plain English a non-engineer
+    can read. No file paths, no code identifiers, no acronyms without expansion.
+  - VISUAL-FIRST: every major section has a visual spine; prose lives INSIDE collapsibles.
+    The reader should grasp the shape of the plan from visuals alone:
+      · Before/after cards — today's pain vs the end state (omit if the change has no
+        user/author-visible before/after)
+      · How it works — ONE Mermaid flowchart of the data/control flow (omit for trivial flows;
+        use an inline ASCII flow instead if it's 3 boxes or fewer)
+      · Mockups — side-by-side fake-UI cards when the change touches an authoring dialog or
+        user-facing surface (pure-backend work: skip)
+      · Options matrix — alternatives as rows, decision criteria as columns, ✓/~/✗ cells,
+        chosen row highlighted with class "pick". Criteria are per-plan — pick the 3-5 that
+        actually drove the decision. Full reasoning stays in the plan .md
+      · Steps pipeline — horizontal S# strip (status + title + one line); per-step technical
+        detail in <details> blocks BELOW the strip, one per S#
+      · Risk strip — color-coded HIGH/MED/LOW cards, each naming the step that checks it
+  - Every ID (S#/D#/Q#, option letters) always appears with its human title. IDs are stable —
+    never renumber, even when items are removed.
+  - The doc must make sense with every <details> closed.
+  - Every <a> gets target="_blank" rel="noopener".
+  - Status marks: ✓ done · ► in progress · · pending (update the pipeline strip AND the pill).
+  - TWO MODES, same file: PREVIEW (before execution — what WILL happen; steps in future tense)
+    and REVIEW (after — a code-review guide grounded in the actual commits/diffs, with every
+    difference from the plan called out). Say which mode in the status pill. In REVIEW mode the
+    risk strip becomes "what was checked and how it came out".
+  - ACCURACY: every statement must trace to the plan, the spec, or git. Never report a test
+    count, commit, or result you did not actually observe — mark it "not run" with the reason.
+    Delete any section you can't fill with real information; never guess.
+  - Mermaid loads from a CDN (the only permitted external asset); offline it degrades to a
+    code block — keep node labels readable as plain text for that case.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}} — Plan</title>
+<style>
+/* ==== BEGIN SHARED THEME (generated from theme.css by build.py — do not hand-edit; edit theme.css and re-run) ==== */
+:root {
+  /* Catppuccin Mocha palette — https://catppuccin.com/palette */
+  --ctp-rosewater:#f5e0dc; --ctp-flamingo:#f2cdcd; --ctp-pink:#f5c2e7; --ctp-mauve:#cba6f7;
+  --ctp-red:#f38ba8; --ctp-maroon:#eba0ac; --ctp-peach:#fab387; --ctp-yellow:#f9e2af;
+  --ctp-green:#a6e3a1; --ctp-teal:#94e2d5; --ctp-sky:#89dceb; --ctp-sapphire:#74c7ec;
+  --ctp-blue:#89b4fa; --ctp-lavender:#b4befe;
+  --ctp-text:#cdd6f4; --ctp-subtext1:#bac2de; --ctp-subtext0:#a6adc8;
+  --ctp-overlay2:#9399b2; --ctp-overlay1:#7f849c; --ctp-overlay0:#6c7086;
+  --ctp-surface2:#585b70; --ctp-surface1:#45475a; --ctp-surface0:#313244;
+  --ctp-base:#1e1e2e; --ctp-mantle:#181825; --ctp-crust:#11111b;
+
+  /* Semantic tokens the templates actually use */
+  --ink: var(--ctp-text);
+  --muted: var(--ctp-subtext0);
+  --line: var(--ctp-surface1);
+  --accent: var(--ctp-blue);
+  --ok: var(--ctp-green);
+  --now: var(--ctp-peach);
+  --wait: var(--ctp-yellow);
+  --bad: var(--ctp-red);
+  --alert: var(--ctp-red);
+  --chip: var(--ctp-surface1);
+  --panel: var(--ctp-mantle);
+  --card: var(--ctp-surface0);
+  --on-accent: var(--ctp-crust); /* text color to use on top of a light accent bg (peach/blue/green are pastel-light, need dark text) */
+
+  --ok-bg: color-mix(in srgb, var(--ctp-green) 16%, var(--ctp-base));
+  --now-bg: color-mix(in srgb, var(--ctp-peach) 16%, var(--ctp-base));
+  --wait-bg: color-mix(in srgb, var(--ctp-yellow) 16%, var(--ctp-base));
+  --alert-bg: color-mix(in srgb, var(--ctp-red) 16%, var(--ctp-base));
+}
+
+* { box-sizing: border-box; }
+body { background: var(--ctp-base); color: var(--ink); }
+a { color: var(--accent); }
+code { background: var(--ctp-surface0); color: var(--ctp-text); padding: 0 .25em; border-radius: 3px; font-size: .9em; }
+::selection { background: var(--ctp-surface2); color: var(--ctp-text); }
+/* ==== END SHARED THEME ==== */
+
+/* ---- plan-doc-specific styles ---- */
+body { font:16px/1.6 -apple-system, Helvetica, sans-serif; max-width:960px; margin:2rem auto; padding:0 1.2rem; }
+header { border-bottom:3px solid var(--accent); padding-bottom:.6rem; margin-bottom:1.2rem; }
+h1 { font-size:1.5rem; margin:0; } .ticket { color:var(--muted); font-size:.95rem; }
+.status-pill { display:inline-block; background:var(--now-bg); border:1px solid var(--now); color:var(--now); border-radius:999px; padding:.1rem .7rem; font-size:.85rem; margin-left:.6rem; vertical-align:middle; }
+.briefing { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1rem 1.2rem; margin-bottom:1.6rem; display:grid; grid-template-columns:1fr 1fr; gap:.9rem 1.4rem; }
+.briefing div dt { font-weight:700; color:var(--accent); text-transform:uppercase; font-size:.8rem; letter-spacing:.05em; }
+.briefing div dd { margin:.15rem 0 0 0; font-size:.95rem; }
+h2 { font-size:1.05rem; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); border-bottom:1px solid var(--line); padding-bottom:.25rem; margin-top:2.2rem; }
+details { border:1px solid var(--line); border-radius:8px; margin:.5rem 0; background:var(--card); }
+details > summary { cursor:pointer; padding:.6rem .9rem; font-weight:600; list-style-position:inside; }
+details[open] > summary { border-bottom:1px solid var(--line); }
+details .body { padding:.6rem 1rem .8rem; font-size:.93rem; color:var(--ink); }
+.id { color:var(--muted); font-size:.85rem; margin-right:.35rem; }
+.why { color:var(--muted); font-style:italic; }
+button.stub { cursor:pointer; border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:4px; font-size:.75rem; float:right; }
+ul { margin:.3rem 0; }
+/* before/after cards */
+.ba { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.8rem 0 0; }
+.ba .card { border:1px solid var(--line); border-radius:10px; padding:.8rem 1rem; }
+.ba .card h3 { margin:.1rem 0 .4rem; font-size:.95rem; }
+.ba .before h3 { color:var(--bad); } .ba .after h3 { color:var(--ok); }
+.ba .before { background:var(--alert-bg); } .ba .after { background:var(--ok-bg); }
+.ba li { font-size:.9rem; }
+/* step pipeline */
+.pipe { display:grid; grid-template-columns:repeat(4,1fr); gap:.6rem; margin:.9rem 0 .4rem; }
+.pipe .step { border:1px solid var(--line); border-top:5px solid var(--accent); border-radius:8px; padding:.6rem .8rem; background:var(--card); position:relative; }
+.pipe .step.done { border-top-color:var(--ok); } .pipe .step.now { border-top-color:var(--now); }
+.pipe .step .sid { font-weight:800; color:var(--accent); font-size:.85rem; }
+.pipe .step .t { font-weight:700; font-size:.92rem; margin:.1rem 0 .25rem; }
+.pipe .step .d { font-size:.82rem; color:var(--muted); line-height:1.4; }
+.pipe .step:not(:last-child)::after { content:"➜"; position:absolute; right:-1.05rem; top:42%; color:var(--muted); font-size:1rem; z-index:2; }
+/* options matrix */
+table.matrix { border-collapse:collapse; width:100%; font-size:.88rem; margin:.7rem 0; }
+table.matrix th, table.matrix td { border:1px solid var(--line); padding:.45rem .6rem; text-align:center; }
+table.matrix th { background:var(--panel); color:var(--accent); }
+table.matrix td.name { text-align:left; font-weight:600; }
+table.matrix tr.pick { background:var(--ok-bg); outline:2px solid var(--ok); }
+.yes { color:var(--ok); font-weight:700; } .no { color:var(--bad); font-weight:700; } .meh { color:var(--now); font-weight:700; }
+.legend { font-size:.8rem; color:var(--muted); }
+/* mockups */
+.mocks { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:.8rem; }
+.mock { border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card); }
+.mock .bar { background:var(--accent); color:var(--on-accent); font-size:.8rem; padding:.3rem .7rem; }
+.mock .inner { padding:.8rem .9rem; font-size:.85rem; }
+.field { margin-bottom:.6rem; }
+.field label { display:block; font-weight:700; font-size:.78rem; color:var(--muted); margin-bottom:.15rem; }
+.fake-select, .fake-input { border:1px solid var(--line); border-radius:4px; padding:.25rem .5rem; background:var(--panel); display:flex; justify-content:space-between; }
+.fake-select .caret, .fake-input .caret { color:var(--muted); }
+.new-flag { background:var(--now-bg); color:var(--now); border:1px solid var(--now); border-radius:4px; font-size:.7rem; padding:0 .3rem; margin-left:.3rem; vertical-align:middle; }
+.fake-list { border:1px solid var(--line); border-top:none; border-radius:0 0 4px 4px; }
+.fake-list div { padding:.2rem .5rem; border-top:1px solid var(--line); }
+.fake-list .hl { background:var(--chip); }
+.go { display:inline-block; background:var(--accent); color:var(--on-accent); border-radius:4px; padding:.25rem .9rem; font-weight:700; margin-top:.5rem; }
+/* diagrams + risks */
+.mermaid { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:.6rem; margin:.8rem 0; }
+.risk-strip { display:flex; gap:.6rem; margin:.8rem 0; flex-wrap:wrap; }
+.risk { border-radius:8px; padding:.5rem .8rem; font-size:.85rem; flex:1 1 240px; border:1px solid var(--line); }
+.risk.hi { background:var(--alert-bg); border-color:var(--bad); } .risk.med { background:var(--now-bg); border-color:var(--now); } .risk.lo { background:var(--ok-bg); border-color:var(--ok); }
+.risk b { display:block; }
+@media (max-width:760px){ .briefing,.ba,.pipe,.mocks{grid-template-columns:1fr;} .pipe .step::after{content:"";} }
+</style>
+</head>
+<body>
+<header>
+  <h1>{{TITLE}} <span class="status-pill">{{PREVIEW — awaiting review | REVIEW — implemented}}</span></h1>
+  <div class="ticket">{{TICKET}} · plan source: {{PLAN_MD_PATH}} · updated {{DATE}}</div>
+</header>
+
+<dl class="briefing">
+  <div><dt>What</dt><dd>{{one or two plain sentences}}</dd></div>
+  <div><dt>Why</dt><dd>{{the gap this closes}}</dd></div>
+  <div><dt>What changes for people</dt><dd>{{visible change for authors/users; "nothing visible" is fine}}</dd></div>
+  <div><dt>How we'll know</dt><dd>{{tests + manual checks, in plain words}}</dd></div>
+</dl>
+
+<h2>Before / after</h2>
+<!-- Omit this section when there's no meaningful before/after. -->
+<div class="ba">
+  <div class="card before"><h3>✗ Today</h3><ul><li>{{pain point}}</li></ul></div>
+  <div class="card after"><h3>✓ After this change</h3><ul><li>{{improvement}}</li></ul></div>
+</div>
+
+<h2>How it works</h2>
+<p style="font-size:.9rem">{{one plain sentence introducing the flow}}</p>
+<div class="mermaid">
+flowchart LR
+  A["{{input / trigger}}"] --> M["{{the thing being built}}"]
+  M --> O["{{output the user sees}}"]
+</div>
+
+<h2>What people see</h2>
+<!-- Only when the change touches an authoring dialog or user-facing surface. Build fake UI
+     from .mock/.field/.fake-select/.fake-input/.fake-list/.go; flag new bits with .new-flag. -->
+<div class="mocks">
+  <div class="mock"><div class="bar">{{surface 1 (mockup)}}</div><div class="inner">{{fake UI}}</div></div>
+  <div class="mock"><div class="bar">{{surface 2 (mockup)}}</div><div class="inner">{{fake UI}}</div></div>
+</div>
+
+<h2>Options considered</h2>
+<!-- Rows = alternatives (stable letters A, B, C…), columns = the 3-5 criteria that actually
+     drove the decision. Chosen row gets class "pick". Keep cell text tiny; reasoning lives
+     in the plan .md. -->
+<table class="matrix">
+  <tr><th style="text-align:left">Approach</th><th>{{criterion}}</th><th>{{criterion}}</th><th>Verdict</th></tr>
+  <tr class="pick"><td class="name">A — {{chosen approach}}</td><td class="yes">✓</td><td class="yes">✓</td><td><b>CHOSEN</b></td></tr>
+  <tr><td class="name">B — {{alternative}}</td><td class="meh">~ {{caveat}}</td><td class="no">✗ {{dealbreaker}}</td><td>rejected</td></tr>
+</table>
+<p class="legend">✓ good · ~ workable with caveats · ✗ the reason it lost. Full reasoning per option is in the plan source file.</p>
+
+<h2>Steps</h2>
+<!-- Pipeline strip = the skimmable spine (status class: done/now on .step; sid text shows
+     ✓ done / ► in progress / · pending). One <details> per S# below carries the technical detail. -->
+<div class="pipe">
+  <div class="step"><div class="sid">S1 · pending</div><div class="t">{{short title}}</div><div class="d">{{one plain line}}</div></div>
+  <div class="step"><div class="sid">S2 · pending</div><div class="t">{{short title}}</div><div class="d">{{one plain line}}</div></div>
+</div>
+<details>
+  <summary><span class="id">S1</span>{{Step title in plain words}} <button class="stub" onclick="stub('S1','{{title}}')">💬</button></summary>
+  <div class="body">{{files, code, commands, cases — the technical detail}}</div>
+</details>
+
+<h2>Heads up — risks at a glance</h2>
+<!-- Preview mode: what could go wrong + the step that checks it. Review mode: what was
+     checked and how it came out. If genuinely nothing: one .lo card saying so. -->
+<div class="risk-strip">
+  <div class="risk hi"><b>HIGH · {{risk name}} (checked in {{S#}})</b>{{one or two sentences}}</div>
+  <div class="risk med"><b>MED · {{risk name}}</b>{{…}}</div>
+  <div class="risk lo"><b>LOW · {{risk name}}</b>{{…}}</div>
+</div>
+
+<h2>Decisions</h2>
+<details>
+  <summary><span class="id">D1</span>{{Decision in plain words}} <button class="stub" onclick="stub('D1','{{title}}')">💬</button></summary>
+  <div class="body"><span class="why">Why:</span> {{reason}}.</div>
+</details>
+
+<h2>How to review this</h2>
+<ul>
+  <li>First: {{the biggest risk and where to look}}</li>
+  <li>{{what proves nothing else changed}}</li>
+</ul>
+
+<h2>Words</h2>
+<!-- Every term a non-expert reader might not know, one line each. Omit section if empty. -->
+<ul>
+  <li><strong>{{term}}</strong> — {{plain one-line definition}}</li>
+</ul>
+
+<h2>Open questions</h2>
+<p>
+Q1 ({{short title}}): {{the question}}<br>
+{{or "None."}}
+</p>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
+<script>
+function stub(id,title){navigator.clipboard.writeText('re '+id+' ("'+title+'"): ');event.stopPropagation();}
+</script>
+</body>
+</html>

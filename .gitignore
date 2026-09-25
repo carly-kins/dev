@@ -7,3 +7,6 @@ scripts/trans
 stylelintrc.yaml
 databases
 plugins
+claude/CLAUDE.company.md
+claude/install-plugins.company.sh
+claude/settings.company.json

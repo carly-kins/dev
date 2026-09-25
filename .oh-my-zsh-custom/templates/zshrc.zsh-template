@@ -17,6 +17,8 @@ export PATH=$PYENV_PATH/shims:$PATH
 export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH" 
 
+export PATH="$HOME/.local/bin:$PATH"
+
 export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
 
 # Dear Carly, at some Point you are going to look for java paths. 
@@ -32,6 +34,7 @@ export NVM_DIR=~/.nvm
 ZSH_THEME="spaceship"
 SPACESHIP_GIT_BRANCH_PREFIX="🌱 "
 export SPACESHIP_DIR_TRUNC=0
+SPACESHIP_PROMPT_ASYNC=false
 
 # Set list of themes to pick from when loading at random
 # ZSH_THEME_RANDOM_CANDIDATES=( )
