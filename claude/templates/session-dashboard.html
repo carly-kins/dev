@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dashboard: {{TOPIC}} — {{DATE}}</title>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
+<style>
+/* ==== BEGIN SHARED THEME (generated from theme.css by build.py — do not hand-edit; edit theme.css and re-run) ==== */
+:root {
+  /* Catppuccin Mocha palette — https://catppuccin.com/palette */
+  --ctp-rosewater:#f5e0dc; --ctp-flamingo:#f2cdcd; --ctp-pink:#f5c2e7; --ctp-mauve:#cba6f7;
+  --ctp-red:#f38ba8; --ctp-maroon:#eba0ac; --ctp-peach:#fab387; --ctp-yellow:#f9e2af;
+  --ctp-green:#a6e3a1; --ctp-teal:#94e2d5; --ctp-sky:#89dceb; --ctp-sapphire:#74c7ec;
+  --ctp-blue:#89b4fa; --ctp-lavender:#b4befe;
+  --ctp-text:#cdd6f4; --ctp-subtext1:#bac2de; --ctp-subtext0:#a6adc8;
+  --ctp-overlay2:#9399b2; --ctp-overlay1:#7f849c; --ctp-overlay0:#6c7086;
+  --ctp-surface2:#585b70; --ctp-surface1:#45475a; --ctp-surface0:#313244;
+  --ctp-base:#1e1e2e; --ctp-mantle:#181825; --ctp-crust:#11111b;
+
+  /* Semantic tokens the templates actually use */
+  --ink: var(--ctp-text);
+  --muted: var(--ctp-subtext0);
+  --line: var(--ctp-surface1);
+  --accent: var(--ctp-blue);
+  --ok: var(--ctp-green);
+  --now: var(--ctp-peach);
+  --wait: var(--ctp-yellow);
+  --bad: var(--ctp-red);
+  --alert: var(--ctp-red);
+  --chip: var(--ctp-surface1);
+  --panel: var(--ctp-mantle);
+  --card: var(--ctp-surface0);
+  --on-accent: var(--ctp-crust); /* text color to use on top of a light accent bg (peach/blue/green are pastel-light, need dark text) */
+
+  --ok-bg: color-mix(in srgb, var(--ctp-green) 16%, var(--ctp-base));
+  --now-bg: color-mix(in srgb, var(--ctp-peach) 16%, var(--ctp-base));
+  --wait-bg: color-mix(in srgb, var(--ctp-yellow) 16%, var(--ctp-base));
+  --alert-bg: color-mix(in srgb, var(--ctp-red) 16%, var(--ctp-base));
+}
+
+* { box-sizing: border-box; }
+body { background: var(--ctp-base); color: var(--ink); }
+a { color: var(--accent); }
+code { background: var(--ctp-surface0); color: var(--ctp-text); padding: 0 .25em; border-radius: 3px; font-size: .9em; }
+::selection { background: var(--ctp-surface2); color: var(--ctp-text); }
+/* ==== END SHARED THEME ==== */
+
+/* ---- session-dashboard-specific styles ---- */
+body { font-family: -apple-system, sans-serif; max-width: 880px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+h1 { font-size: 1.35rem; margin: 0 0 .2rem; }
+h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 1.8rem 0 .6rem; }
+.sub { font-size: .82rem; color: var(--muted); margin: 0 0 1.2rem; }
+
+/* ---- STATUS BANNER: read state in 2 seconds ---- */
+.banner { border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border: 1px solid; }
+.banner.active { background: var(--now-bg); border-color: var(--now); }
+.banner.blocked { background: var(--alert-bg); border-color: var(--alert); }
+.banner.done { background: var(--ok-bg); border-color: var(--ok); }
+.banner .goal { font-size: 1.02rem; font-weight: 600; margin: 0 0 .5rem; }
+.banner .now { margin: 0; font-size: .95rem; }
+.banner .now b { color: var(--now); }
+
+/* progress strip */
+.strip { display: flex; flex-wrap: wrap; gap: .3rem; margin: .7rem 0 0; font-size: .82rem; }
+.strip .node { padding: .15rem .55rem; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; color: var(--muted); }
+.strip .node.done { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.strip .node.current { background: var(--now); border-color: var(--now); color: var(--on-accent); font-weight: 600; }
+.barwrap { height: 7px; background: var(--ctp-surface0); border-radius: 4px; margin-top: .7rem; overflow: hidden; }
+.bar { height: 100%; background: var(--ok); border-radius: 4px; }
+
+/* ---- ATTENTION CALLOUT: what needs YOU floats to the top. Delete if nothing. ---- */
+.attention { background: var(--wait-bg); border: 1px solid var(--wait); border-left: 5px solid var(--wait); border-radius: 8px; padding: .8rem 1rem; margin-bottom: 1.4rem; }
+.attention h2 { color: var(--wait); margin-top: 0; }
+.attention ul { margin: 0; padding-left: 1.2rem; }
+
+/* steps */
+ul.plan { list-style: none; padding: 0; margin: 0; }
+ul.plan > li { padding: .5rem .2rem; border-bottom: 1px solid var(--line); }
+ul.plan > li.done { opacity: .6; }               /* finished work recedes */
+ul.plan > li.current { background: var(--now-bg); border-radius: 6px; padding-left: .6rem; }
+.mark { font-weight: 700; margin-right: .4rem; }
+.done .mark { color: var(--ok); } .current .mark { color: var(--now); } .pending .mark { color: var(--muted); }
+.id { font-weight: 700; color: var(--accent); margin-right: .35rem; font-size: .9rem; }
+.headline { font-weight: 600; }
+.result { color: var(--muted); font-weight: 400; }
+details { margin: .35rem 0 0 1.5rem; } summary { cursor: pointer; color: var(--muted); font-size: .88rem; }
+details .body { padding: .4rem 0; font-size: .92rem; }
+
+/* ---- VERIFICATION: per-step check badge + the panel ---- */
+.badge { display: inline-block; font-size: .74rem; padding: .05rem .45rem; border-radius: 999px; border: 1px solid var(--line); margin-left: .4rem; white-space: nowrap; vertical-align: middle; }
+.badge.green { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.badge.red { background: var(--alert-bg); border-color: var(--alert); color: var(--alert); }
+.badge.pending { background: var(--ctp-surface0); color: var(--muted); }
+.verify { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.verify .row { display: grid; grid-template-columns: 1.4rem 6.5rem 1fr; gap: .5rem; align-items: start; padding: .5rem .8rem; border-top: 1px solid var(--line); font-size: .9rem; }
+.verify .row:first-child { border-top: none; }
+.verify .grp { font-weight: 600; color: var(--muted); text-transform: uppercase; font-size: .72rem; letter-spacing: .04em; }
+.verify .cmd { color: var(--muted); }
+
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid var(--line); padding: .35rem .6rem; font-size: .9rem; text-align: left; vertical-align: top; }
+th { background: var(--panel); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.fb { cursor: pointer; border: none; background: none; font-size: .9rem; opacity: .5; color: var(--ink); }
+.fb:hover { opacity: 1; }
+#fb-toast { position: fixed; top: 10px; right: 10px; background: var(--accent); color: var(--on-accent); padding: .4rem .8rem; border-radius: 6px; opacity: 0; transition: opacity .3s; z-index: 9; }
+</style>
+</head>
+<body>
+<div id="fb-toast"></div>
+
+<h1>{{TOPIC}}</h1>
+<p class="sub">{{DATE}} · updated {{TIMESTAMP}} · click 💬 to copy a reply stub</p>
+
+<!-- STATUS BANNER — class = active | blocked | done. Fill goal + current step + progress. -->
+<div class="banner active">
+  <p class="goal">{{ONE_SENTENCE_GOAL}}</p>
+  <p class="now"><b>Now:</b> step {{S_CURRENT}} of {{S_TOTAL}} — {{CURRENT_STEP_TITLE}}{{ · waiting on you for: … | remove if not blocked}}</p>
+  <div class="strip">
+    <span class="node done">S1 ✓</span>
+    <span class="node current">S2 ►</span>
+    <span class="node">S3 ·</span>
+  </div>
+  <div class="barwrap"><div class="bar" style="width:{{PERCENT_DONE}}%"></div></div>
+</div>
+
+<!-- NEEDS YOUR ATTENTION — floats above everything. DELETE the whole block when nothing is open. -->
+<div class="attention">
+  <h2>Needs your attention</h2>
+  <ul>
+    <li><span class="id">Q1</span>{{open question / blocker in plain words}} <button class="fb" onclick="fb('Q1','{{short}}')">💬</button></li>
+  </ul>
+</div>
+
+<h2>Plan</h2>
+<!-- Each step carries a verification badge: the named test/command that proves it + status.
+     class = green (passing) | red (failing / not yet green) | pending (not run). Omit the badge on
+     steps that have no check (e.g. a pure spec-writing step). -->
+<ul class="plan">
+  <li class="done"><span class="mark">✓</span><span class="id">S1</span><span class="headline">{{STEP_TITLE}}</span> — <span class="result">{{one-line result}}</span><span class="badge green">{{check name}} · 🟢</span> <button class="fb" onclick="fb('S1','{{STEP_TITLE}}')">💬</button>
+    <details><summary>detail</summary><div class="body">{{step detail}}</div></details></li>
+  <li class="current"><span class="mark">►</span><span class="id">S2</span><span class="headline">{{STEP_TITLE}}</span><span class="badge red">{{check name}} · 🔴</span> <button class="fb" onclick="fb('S2','{{STEP_TITLE}}')">💬</button>
+    <details><summary>detail</summary><div class="body">{{step detail}}</div></details></li>
+  <li class="pending"><span class="mark">·</span><span class="id">S3</span><span class="headline">{{STEP_TITLE}}</span><span class="badge pending">{{check name}} · ☐</span> <button class="fb" onclick="fb('S3','{{STEP_TITLE}}')">💬</button></li>
+</ul>
+
+<h2>Verification</h2>
+<!-- The whole proof picture in one place. Status marks: 🟢 pass · 🔴 fail · ☐ not yet run.
+     Groups: Automated (tests), Build, Manual (the hands-on checks the plan named), Close-out
+     (working tree scope, spec matches diff, parking lot captured). Fill from the plan's verify
+     step; a claim here must trace to an actually-observed result (never report an unrun check green). -->
+<div class="verify">
+  <div class="row"><span>🟢</span><span class="grp">Automated</span><span><code>{{test command}}</code> — <span class="cmd">{{result you saw, e.g. 278 pass}}</span></span></div>
+  <div class="row"><span>🟢</span><span class="grp">Build</span><span><code>{{build command}}</code> — <span class="cmd">{{result}}</span></span></div>
+  <div class="row"><span>☐</span><span class="grp">Manual</span><span>{{the hands-on check the plan named, in plain words}}</span></div>
+  <div class="row"><span>☐</span><span class="grp">Close-out</span><span>{{working tree holds only plan files · spec matches diff · deferrals parked}}</span></div>
+</div>
+
+<h2>Diagram</h2>
+<pre class="mermaid">
+{{MERMAID_SOURCE — delete section if not needed}}
+</pre>
+
+<h2>Decisions</h2>
+<table>
+  <tr><th>ID</th><th>Decision</th><th>Why</th></tr>
+  <tr><td><span class="id">D1</span></td><td>{{what}} <button class="fb" onclick="fb('D1','{{short}}')">💬</button></td><td>{{why}}</td></tr>
+</table>
+
+<h2>Next steps</h2>
+<ul>
+  <li>{{next action}}</li>
+</ul>
+
+<h2>Links</h2>
+<ul>
+  <li><a href="parking-lot.html" target="_blank" rel="noopener">Parking lot</a></li>
+</ul>
+<script>
+  function fb(id, title) {
+    navigator.clipboard.writeText('re ' + id + ' ("' + title + '"): ');
+    const el = document.getElementById('fb-toast');
+    el.textContent = 'Copied: re ' + id + ' — paste in chat and add your comment';
+    el.style.opacity = 1; setTimeout(() => el.style.opacity = 0, 2000);
+  }
+</script>
+</body>
+</html>

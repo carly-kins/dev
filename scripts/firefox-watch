@@ -1,0 +1,118 @@
+#!/bin/bash
+set -euo pipefail
+
+MEM_WARN_MB=4096
+STORAGE_WARN_MB=500
+INTERVAL=60
+ONCE=0
+
+PROFILES_DIR="$HOME/Library/Application Support/Firefox/Profiles"
+TARGET_PATTERNS=(
+  "https+++teams.microsoft.com*"
+  "https+++*sharepoint.com*"
+  "https+++outlook.office.com*"
+  "https+++outlook.office365.com*"
+)
+
+usage() {
+  cat <<'EOF'
+Usage: firefox-watch [options]
+
+Polls Firefox's memory footprint, system memory pressure, and known-bloaty
+storage origins (Teams/SharePoint/Outlook), and sends a macOS notification
+before things get bad enough to trigger a memory-pressure kill.
+
+Options:
+  --mem-threshold-mb <n>      Warn when Firefox's total RSS exceeds this (default 4096)
+  --storage-threshold-mb <n>  Warn when a tracked origin folder exceeds this (default 500)
+  --interval <seconds>        Seconds between checks (default 60)
+  --once                      Run a single check and exit (good for cron/launchd)
+  -h, --help                  Show this help
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --mem-threshold-mb) MEM_WARN_MB="$2"; shift 2 ;;
+    --storage-threshold-mb) STORAGE_WARN_MB="$2"; shift 2 ;;
+    --interval) INTERVAL="$2"; shift 2 ;;
+    --once) ONCE=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
+  esac
+done
+
+notify() {
+  osascript -e "display notification \"$2\" with title \"$1\"" >/dev/null 2>&1 || true
+}
+
+pressure_label() {
+  case "$1" in
+    1) echo "normal" ;;
+    2) echo "WARN" ;;
+    4) echo "CRITICAL" ;;
+    *) echo "unknown ($1)" ;;
+  esac
+}
+
+mem_was_high=0
+pressure_was_high=0
+
+check_once() {
+  local total_kb total_mb level level_txt swap_used
+
+  total_kb=$(ps -axo rss,comm | grep -iE "firefox|Firefox GPU Helper|plugin-container" | awk '{sum+=$1} END {print sum+0}')
+  total_mb=$((total_kb / 1024))
+
+  level=$(sysctl -n kern.memorystatus_vm_pressure_level 2>/dev/null || echo 1)
+  level_txt=$(pressure_label "$level")
+
+  swap_used=$(sysctl -n vm.swapusage 2>/dev/null | sed -n 's/.*used = \([0-9.]*M\).*/\1/p')
+
+  echo "[$(date '+%H:%M:%S')] Firefox RSS: ${total_mb}MB | system pressure: ${level_txt} | swap used: ${swap_used:-?}"
+
+  if [ "$total_mb" -gt "$MEM_WARN_MB" ]; then
+    if [ "$mem_was_high" -eq 0 ]; then
+      notify "Firefox memory warning" "Firefox is using ${total_mb}MB. Consider closing tabs/profiles before it gets killed for memory pressure."
+    fi
+    mem_was_high=1
+  else
+    mem_was_high=0
+  fi
+
+  if [ "$level" != "1" ]; then
+    if [ "$pressure_was_high" -eq 0 ]; then
+      notify "System memory pressure: ${level_txt}" "macOS is under memory pressure. Firefox may be force-killed soon — consider quitting unused tabs/profiles now."
+    fi
+    pressure_was_high=1
+  else
+    pressure_was_high=0
+  fi
+
+  for pdir in "$PROFILES_DIR"/*/; do
+    sdir="${pdir}storage/default"
+    [ -d "$sdir" ] || continue
+    for pattern in "${TARGET_PATTERNS[@]}"; do
+      for odir in "$sdir"/$pattern; do
+        [ -d "$odir" ] || continue
+        size_kb=$(du -sk "$odir" 2>/dev/null | cut -f1)
+        size_mb=$((size_kb / 1024))
+        if [ "$size_mb" -gt "$STORAGE_WARN_MB" ]; then
+          echo "  $(basename "$pdir")/$(basename "$odir"): ${size_mb}MB (over ${STORAGE_WARN_MB}MB)"
+          notify "Firefox storage bloat" "$(basename "$odir") is ${size_mb}MB. Run firefox-cleanup soon."
+        fi
+      done
+    done
+  done
+}
+
+if [ "$ONCE" -eq 1 ]; then
+  check_once
+  exit 0
+fi
+
+echo "Watching Firefox (mem>${MEM_WARN_MB}MB, storage>${STORAGE_WARN_MB}MB, every ${INTERVAL}s). Ctrl+C to stop."
+while true; do
+  check_once
+  sleep "$INTERVAL"
+done

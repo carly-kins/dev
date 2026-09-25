@@ -1,0 +1,42 @@
+/* Shared theme for plan-doc.html / session-dashboard.html — Catppuccin Mocha.
+   Edit this file, then run `python3 build.py` from this templates/ directory to
+   re-inline it into both templates (between their BEGIN/END SHARED THEME markers).
+   Never edit the generated block directly — it gets overwritten on next build. */
+
+:root {
+  /* Catppuccin Mocha palette — https://catppuccin.com/palette */
+  --ctp-rosewater:#f5e0dc; --ctp-flamingo:#f2cdcd; --ctp-pink:#f5c2e7; --ctp-mauve:#cba6f7;
+  --ctp-red:#f38ba8; --ctp-maroon:#eba0ac; --ctp-peach:#fab387; --ctp-yellow:#f9e2af;
+  --ctp-green:#a6e3a1; --ctp-teal:#94e2d5; --ctp-sky:#89dceb; --ctp-sapphire:#74c7ec;
+  --ctp-blue:#89b4fa; --ctp-lavender:#b4befe;
+  --ctp-text:#cdd6f4; --ctp-subtext1:#bac2de; --ctp-subtext0:#a6adc8;
+  --ctp-overlay2:#9399b2; --ctp-overlay1:#7f849c; --ctp-overlay0:#6c7086;
+  --ctp-surface2:#585b70; --ctp-surface1:#45475a; --ctp-surface0:#313244;
+  --ctp-base:#1e1e2e; --ctp-mantle:#181825; --ctp-crust:#11111b;
+
+  /* Semantic tokens the templates actually use */
+  --ink: var(--ctp-text);
+  --muted: var(--ctp-subtext0);
+  --line: var(--ctp-surface1);
+  --accent: var(--ctp-blue);
+  --ok: var(--ctp-green);
+  --now: var(--ctp-peach);
+  --wait: var(--ctp-yellow);
+  --bad: var(--ctp-red);
+  --alert: var(--ctp-red);
+  --chip: var(--ctp-surface1);
+  --panel: var(--ctp-mantle);
+  --card: var(--ctp-surface0);
+  --on-accent: var(--ctp-crust); /* text color to use on top of a light accent bg (peach/blue/green are pastel-light, need dark text) */
+
+  --ok-bg: color-mix(in srgb, var(--ctp-green) 16%, var(--ctp-base));
+  --now-bg: color-mix(in srgb, var(--ctp-peach) 16%, var(--ctp-base));
+  --wait-bg: color-mix(in srgb, var(--ctp-yellow) 16%, var(--ctp-base));
+  --alert-bg: color-mix(in srgb, var(--ctp-red) 16%, var(--ctp-base));
+}
+
+* { box-sizing: border-box; }
+body { background: var(--ctp-base); color: var(--ink); }
+a { color: var(--accent); }
+code { background: var(--ctp-surface0); color: var(--ctp-text); padding: 0 .25em; border-radius: 3px; font-size: .9em; }
+::selection { background: var(--ctp-surface2); color: var(--ctp-text); }
