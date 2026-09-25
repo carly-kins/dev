@@ -5,7 +5,7 @@ export ZSH=~/.oh-my-zsh
 
 export ENV_PATH=~/dev
 export DOTFILES_PATH="$ENV_PATH/.oh-my-zsh-custom/templates"
-$(brew --prefix)/bin/brew shellenv
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # If you come from bash you might have to change your $PATH.
 export PYENV_PATH=~/.pyenv 
