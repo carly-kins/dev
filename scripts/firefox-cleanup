@@ -1,0 +1,186 @@
+#!/bin/bash
+set -euo pipefail
+
+PROFILES_DIR="$HOME/Library/Application Support/Firefox/Profiles"
+BACKUP_DIR="$HOME/.firefox-cleanup-backups"
+TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
+
+TARGET_PATTERNS=(
+  "https+++teams.microsoft.com*"
+  "https+++*sharepoint.com*"
+  "https+++outlook.office.com*"
+  "https+++outlook.office365.com*"
+)
+
+FULL=0
+DRY_RUN=0
+ASSUME_YES=0
+DO_QUIT=0
+LIST_ONLY=0
+PROFILE_FILTER=""
+
+usage() {
+  cat <<'EOF'
+Usage: firefox-cleanup [options]
+
+Clears bloated Firefox IndexedDB/storage data (Teams/SharePoint/Outlook by
+default) that can trigger disk-write and memory-pressure kills. Firefox must
+be fully quit before anything is touched.
+
+Options:
+  --profile <substr>   Only operate on profiles whose directory name contains <substr>
+  --full               Wipe the ENTIRE storage/default (and storage/permanent,
+                       storage/temporary) folder instead of just the targeted
+                       Microsoft 365 domains
+  --list               Show storage sizes per profile/origin and exit (no changes)
+  --dry-run            Show what would be removed without removing it
+  --quit               Automatically quit Firefox first (waits up to 30s)
+  -y, --yes            Don't prompt for confirmation
+  -h, --help           Show this help
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --profile) PROFILE_FILTER="$2"; shift 2 ;;
+    --full) FULL=1; shift ;;
+    --list) LIST_ONLY=1; shift ;;
+    --dry-run) DRY_RUN=1; shift ;;
+    --quit) DO_QUIT=1; shift ;;
+    -y|--yes) ASSUME_YES=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
+  esac
+done
+
+if [ ! -d "$PROFILES_DIR" ]; then
+  echo "Firefox profiles directory not found: $PROFILES_DIR" >&2
+  exit 1
+fi
+
+is_firefox_running() {
+  pgrep -f "/Applications/Firefox.app" >/dev/null 2>&1
+}
+
+quit_firefox() {
+  echo "Asking Firefox to quit..."
+  osascript -e 'tell application "Firefox" to quit' >/dev/null 2>&1 || true
+  for _ in $(seq 1 30); do
+    is_firefox_running || return 0
+    sleep 1
+  done
+  return 1
+}
+
+NEEDS_QUIT=1
+if [ "$LIST_ONLY" -eq 1 ] || [ "$DRY_RUN" -eq 1 ]; then
+  NEEDS_QUIT=0
+fi
+
+if [ "$NEEDS_QUIT" -eq 1 ] && is_firefox_running; then
+  if [ "$DO_QUIT" -eq 1 ]; then
+    if ! quit_firefox; then
+      echo "Firefox is still running after 30s. Quit it manually and re-run." >&2
+      exit 1
+    fi
+    echo "Firefox has quit."
+  else
+    echo "Firefox is currently running. Quit it first, or re-run with --quit." >&2
+    exit 1
+  fi
+fi
+
+PROFILE_DIRS=()
+for d in "$PROFILES_DIR"/*/; do
+  name="$(basename "$d")"
+  if [ -n "$PROFILE_FILTER" ]; then
+    case "$name" in
+      *"$PROFILE_FILTER"*) ;;
+      *) continue ;;
+    esac
+  fi
+  PROFILE_DIRS+=("$d")
+done
+
+if [ "${#PROFILE_DIRS[@]}" -eq 0 ]; then
+  echo "No matching profiles found." >&2
+  exit 1
+fi
+
+TO_REMOVE=()
+
+for pdir in "${PROFILE_DIRS[@]}"; do
+  pname="$(basename "$pdir")"
+  for storage_kind in default permanent temporary; do
+    sdir="${pdir}storage/${storage_kind}"
+    [ -d "$sdir" ] || continue
+    if [ "$FULL" -eq 1 ]; then
+      if [ "$LIST_ONLY" -eq 1 ]; then
+        size=$(du -sh "$sdir" 2>/dev/null | cut -f1)
+        echo "[$pname] storage/$storage_kind: $size (FULL wipe target)"
+      else
+        TO_REMOVE+=("$sdir")
+      fi
+    else
+      for pattern in "${TARGET_PATTERNS[@]}"; do
+        for odir in "$sdir"/$pattern; do
+          [ -d "$odir" ] || continue
+          if [ "$LIST_ONLY" -eq 1 ]; then
+            size=$(du -sh "$odir" 2>/dev/null | cut -f1)
+            echo "[$pname] $(basename "$odir"): $size"
+          else
+            TO_REMOVE+=("$odir")
+          fi
+        done
+      done
+    fi
+  done
+done
+
+if [ "$LIST_ONLY" -eq 1 ]; then
+  exit 0
+fi
+
+if [ "${#TO_REMOVE[@]}" -eq 0 ]; then
+  echo "Nothing matched — nothing to clean up."
+  exit 0
+fi
+
+echo "The following will be moved to a dated backup and cleared:"
+grand_total_k=0
+for item in "${TO_REMOVE[@]}"; do
+  size_h=$(du -sh "$item" 2>/dev/null | cut -f1)
+  size_k=$(du -sk "$item" 2>/dev/null | cut -f1)
+  grand_total_k=$((grand_total_k + size_k))
+  echo "  $size_h  $item"
+done
+echo "Total: approximately $((grand_total_k / 1024)) MB"
+
+if [ "$DRY_RUN" -eq 1 ]; then
+  echo "(dry run — nothing changed)"
+  exit 0
+fi
+
+if [ "$ASSUME_YES" -ne 1 ]; then
+  printf "Proceed? [y/N] "
+  read -r reply
+  case "$reply" in
+    y|Y|yes|YES) ;;
+    *) echo "Aborted."; exit 0 ;;
+  esac
+fi
+
+mkdir -p "$BACKUP_DIR/$TIMESTAMP"
+
+for item in "${TO_REMOVE[@]}"; do
+  rel="${item#"$PROFILES_DIR"/}"
+  dest="$BACKUP_DIR/$TIMESTAMP/$rel"
+  mkdir -p "$(dirname "$dest")"
+  mv "$item" "$dest"
+  echo "Moved: $item -> $dest"
+done
+
+echo ""
+echo "Done. Backup saved at: $BACKUP_DIR/$TIMESTAMP"
+echo "If Firefox behaves fine after relaunching, you can delete that backup:"
+echo "  rm -rf \"$BACKUP_DIR/$TIMESTAMP\""
