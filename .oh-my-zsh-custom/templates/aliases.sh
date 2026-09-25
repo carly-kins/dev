@@ -18,3 +18,4 @@ alias gitdeletelocal='git branch --merged | grep -v \* | xargs git branch -D'
 alias tc="timeCalc"
 alias cye2e="npm run e2e:chrome -- --spec"
 alias trans="./trans"
+alias blender='"/mnt/c/Program Files/Blender Foundation/Blender 5.1/blender.exe"'

@@ -19,8 +19,8 @@ export PATH=~/bin:/usr/local/bin:$PATH
 #export PATH=/opt/homebrew/bin:$PATH
 
 export PATH=$CUSTOM_SCRIPTS_PATH/scripts:$PATH
-export PATH=LINUXBREW_ROOT:$PATH
-export PATH=RUST_ROOT:$PATH
+export PATH=$LINUXBREW_ROOT:$PATH
+export PATH=$RUST_ROOT:$PATH
 export PATH=$DOTNET_ROOT:$DOTNET_ROOT:$PATH
 
 # zsh

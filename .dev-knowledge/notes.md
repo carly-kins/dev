@@ -13,3 +13,11 @@
 *Exception Handling:* A control structure that catches certain anticipated errors and reacts to them accordingly.
 
 *Scope:* The portion of a program’s execution during which a variable can be seen and accessed.
+
+## Ch. 3.2 -- Conditionals
+
+*If-Then Statement:* A conditional control structure that runs a block of code only if a certain condition is true. 
+
+*Else Statement:* A conditional control structure that runs a block of code if all preceding if-then and else-if statements have been false.
+
+*Else-If Statement:* A conditional control structure that runs a block of code if all preceding if-then and else-if statements have been false and some other conditions are met.
