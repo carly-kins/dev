@@ -5,7 +5,7 @@ export ZSH=~/.oh-my-zsh
 
 export ENV_PATH=~/dev
 export DOTFILES_PATH="$ENV_PATH/.oh-my-zsh-custom/templates"
-$(brew --prefix)/bin/brew shellenv
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # If you come from bash you might have to change your $PATH.
 export PYENV_PATH=~/.pyenv 
@@ -18,7 +18,9 @@ export PATH=$CUSTOM_SCRIPTS_PATH/scripts:$PATH
 export PATH=$JENV_PATH/bin:$PATH
 export PATH=$PYENV_PATH/shims:$PATH
 export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH" 
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+export PATH="$HOME/.local/bin:$PATH"
 
 export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
 
@@ -44,7 +46,7 @@ plugins=(
     jsontools 
     z 
     zsh-syntax-highlighting
-    aem
+    aemc
     )
 
 source $ZSH/oh-my-zsh.sh
