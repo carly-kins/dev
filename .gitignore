@@ -8,6 +8,6 @@ stylelintrc.yaml
 databases
 plugins
 claude/CLAUDE.company.md
-claude/install-plugins.company.sh
+claude/install/install-plugins.company.sh
 claude/settings.company.json
 __pycache__/
