@@ -26,6 +26,24 @@ To change shell to bash
 # Github Codespaces
 Codespaces will automatically pull the zsh dotfiles from the root of this repository and configure them using the `install.sh` script. I used this [guide](https://bea.stollnitz.com/blog/codespaces-terminal/) as inspriation for my setup. 
 
+# Claude Notes App
+A local web page (http://localhost:8989) for finding plans and dashboards and managing the parking lot.
+
+To start it (or just open it if it's already running)
+
+        $ notes
+
+To stop it
+
+        $ notes stop
+
+To restart it, stop it and start it again
+
+        $ notes stop
+        $ notes
+
+`notes` restarts the app by itself when the app's Python code has changed since it started. A change to only `templates/css/base.css` or `templates/theme.css` doesn't need a restart; refresh the page.
+
 # Other notes 
 Slack theme: (Based off Catpuccin - #21262D,#F8F8FA,#A6E3A1,#1E1E2E,#11111B,#CDD6F4,#A6E3A1,#DB889F,#0D1117,#CDD6F4)
 
