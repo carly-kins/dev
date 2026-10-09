@@ -7,7 +7,4 @@ scripts/trans
 stylelintrc.yaml
 databases
 plugins
-claude/CLAUDE.company.md
-claude/install/install-plugins.company.sh
-claude/settings.company.json
 __pycache__/

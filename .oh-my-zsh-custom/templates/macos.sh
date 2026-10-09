@@ -15,6 +15,7 @@ export DOTNET_ROOT=$HOME/.dotnet
 
 export PATH=~/bin:/usr/local/bin:$PATH
 export PATH=$CUSTOM_SCRIPTS_PATH/scripts:$PATH
+export PATH=~/claude-setup/bin:$PATH  # Claude setup repo (notes command)
 export PATH=$JENV_PATH/bin:$PATH
 export PATH=$PYENV_PATH/shims:$PATH
 export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
