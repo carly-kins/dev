@@ -7,3 +7,4 @@ scripts/trans
 stylelintrc.yaml
 databases
 plugins
+__pycache__/

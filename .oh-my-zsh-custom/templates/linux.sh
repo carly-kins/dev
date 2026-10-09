@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+# Path to your oh-my-zsh installation.
+export ZSH=~/.oh-my-zsh
+
+export ENV_PATH=~/dev
+export DOTFILES_PATH="$ENV_PATH/.oh-my-zsh-custom/templates"
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# If you come from bash you might have to change your $PATH.
+export CUSTOM_SCRIPTS_PATH=~/dev
+export DOTNET_ROOT=$HOME/.dotnet/tools
+export RUST_ROOT=$HOME/.cargo/bin
+export LINUXBREW_ROOT=/home/linuxbrew/.linuxbrew/bin/brew
+
+export PATH=~/bin:/usr/local/bin:$PATH
+
+#export PATH=/opt/homebrew/bin:$PATH
+
+export PATH=$CUSTOM_SCRIPTS_PATH/scripts:$PATH
+export PATH=~/claude-setup/bin:$PATH  # Claude setup repo (notes command)
+export PATH=$LINUXBREW_ROOT:$PATH
+export PATH=$RUST_ROOT:$PATH
+export PATH=$DOTNET_ROOT:$DOTNET_ROOT:$PATH
+
+# zsh
+source <(fzf --zsh)
+
+export NVM_DIR=~/.nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/snap/bin:$PATH"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# THEME AND PLUGINS
+source "$DOTFILES_PATH/theme.sh"
+
+# Which plugins would you like to load?
+plugins=(
+    bundler 
+    git 
+    brew 
+    zsh-autosuggestions 
+    web-search 
+    jsontools 
+    z 
+    zsh-syntax-highlighting
+    )
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+export LANG=en_US.UTF-8
+
+# keybinds
+bindkey "^U" backward-kill-line
+
+# Custom Aliases
+source "$DOTFILES_PATH/aliases.sh"
+alias blender='"/mnt/c/Program Files/Blender Foundation/Blender 5.1/blender.exe"'
+
+# environment variables
+export EDITOR="code -w"
+
+# bun completions (after oh-my-zsh so compinit has run)
+[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"

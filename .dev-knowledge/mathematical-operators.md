@@ -8,6 +8,8 @@ Most languages share the same mathematical operators: it's hard to get away from
 - `a ** b`  #Exponentiation, a to the b
 - `a % b`   #Modulus
 
+In computing, the modulo operation returns the remainder or signed remainder of a division, after one number is divided by another, called the modulus of the operation. 
+
 ## Java 	
 - `a / b`   // See notes
 - `a % b`   // Modulus 	
